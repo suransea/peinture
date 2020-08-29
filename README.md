@@ -1,5 +1,7 @@
 # Peinture
 
+[![](https://jitpack.io/v/suransea/peinture.svg)](https://jitpack.io/#suransea/peinture)
+
 A DSL drawing toolkit.
 
 ## Example
