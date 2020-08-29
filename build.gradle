@@ -10,11 +10,12 @@ buildscript {
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         classpath 'com.android.tools.build:gradle:4.0.1'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
     }
 }
 
 allprojects {
-    version = "1.0.0-alpha1"
+    version = "1.0.0-alpha2"
 
     repositories {
         mavenCentral()
@@ -25,6 +26,7 @@ allprojects {
 
 subprojects {
     apply plugin: 'maven'
+    apply plugin: 'maven-publish'
 }
 
 ext {
