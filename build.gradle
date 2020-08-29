@@ -1,0 +1,32 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        google()
+        jcenter()
+    }
+
+    ext.kotlinVersion = '1.4.0'
+
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+        classpath 'com.android.tools.build:gradle:4.0.1'
+    }
+}
+
+allprojects {
+    version = "1.0.0-alpha1"
+
+    repositories {
+        mavenCentral()
+        google()
+        jcenter()
+    }
+}
+
+subprojects {
+    apply plugin: 'maven'
+}
+
+ext {
+    kotlinTest = "org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion"
+}
