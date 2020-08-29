@@ -1,4 +1,4 @@
-/* use keyword let to declare a variable */
+// Use keyword "let" to declare a custom view
 let Custom = Composite {
     Text('Hello') {
         width = 'wrap'
@@ -31,7 +31,7 @@ let Custom = Composite {
 }
 
 /*
- * There can only be one top-level declaration 
+ * There can only be one top-level declaration
  */
 Composite {
     // size = '300dp'  // width = height = '300dp'

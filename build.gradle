@@ -15,18 +15,13 @@ buildscript {
 }
 
 allprojects {
-    version = "1.0.0-alpha2"
+    version = "1.0.0-alpha3"
 
     repositories {
         mavenCentral()
         google()
         jcenter()
     }
-}
-
-subprojects {
-    apply plugin: 'maven'
-    apply plugin: 'maven-publish'
 }
 
 ext {

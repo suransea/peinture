@@ -20,14 +20,11 @@ import top.srsea.peinture.vlparser.ast.Decl
 import top.srsea.peinture.vlparser.parse.Parser
 import top.srsea.peinture.vlparser.type.*
 
-typealias WidgetMap = HashMap<String, Widget>
-
 open class AnalyzeException(msg: String) : Exception(msg)
 
 class Analyzer(vl: String) {
     private val root = Parser(vl).parse()
     private val varMap = root.vars.map { it.name to it.decl }.toMap()
-    private val widgetMap = WidgetMap()
 
     fun analyze(): Widget {
         return analyzeWidget(root.decl)
@@ -35,20 +32,14 @@ class Analyzer(vl: String) {
     }
 
     private fun analyzeWidget(decl: Decl): Widget? {
-        val result = when (decl.type) {
+        return when (decl.type) {
             "Composite" -> analyzeComposite(decl)
             "Empty" -> Empty()
             "Text" -> analyzeText(decl)
             "Image" -> analyzeImage(decl)
-            in widgetMap -> widgetMap[decl.type]
-            in varMap -> varMap[decl.type]?.let {
-                analyzeWidget(it)?.apply {
-                    widgetMap[decl.type] = this
-                }
-            }
+            in varMap -> varMap[decl.type]?.let { analyzeWidget(it) }
             else -> null
-        }
-        return result?.also {
+        }?.also {
             attachProps(it, decl)
         }
     }

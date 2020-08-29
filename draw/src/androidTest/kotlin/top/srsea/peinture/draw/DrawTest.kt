@@ -1,13 +1,15 @@
 package top.srsea.peinture.draw
 
 import android.graphics.Bitmap
+import android.os.Handler
+import android.os.Looper
 import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4
 import org.junit.Test
 import org.junit.runner.RunWith
 
 val vl = """
-/* use keyword let to declare a variable */
+// Use keyword "let" to declare a custom view
 let Custom = Composite {
     Text('Hello') {
         width = 'wrap'
@@ -68,5 +70,15 @@ class DrawTest {
         val drawer = Drawer(appContext)
         val bitmap = drawer.drawBitmap(vl, Bitmap.Config.RGB_565)
         println(bitmap)
+    }
+
+    @Test
+    fun testDrawView() {
+        Handler(Looper.getMainLooper()).post {
+            val appContext = InstrumentationRegistry.getInstrumentation().targetContext
+            val drawer = Drawer(appContext, imageLoader = GladeImageLoader)
+            val view = drawer.drawView(vl)
+            println(view)
+        }
     }
 }
