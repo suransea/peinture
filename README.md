@@ -62,4 +62,4 @@ Composite {
 
 The result:
 
-[![example](https://github.com/suransea/peinture/blob/master/example.png?raw=true)]
+![example](https://i.loli.net/2020/08/29/kAa5TbwxcfjuQEJ.png)
