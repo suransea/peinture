@@ -19,6 +19,7 @@ package top.srsea.peinture.draw
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
+import android.graphics.drawable.GradientDrawable
 import android.support.constraint.ConstraintLayout
 import android.util.TypedValue
 import android.view.View
@@ -86,9 +87,36 @@ private fun String.toScaleType(): ImageView.ScaleType = when (this) {
     else -> ImageView.ScaleType.MATRIX
 }
 
+private fun String.toShape(): Int = when (this) {
+    "oval" -> GradientDrawable.OVAL
+    "rectangle" -> GradientDrawable.RECTANGLE
+    else -> GradientDrawable.RECTANGLE
+}
+
+private fun String.toGradientType() = when (this) {
+    "linear" -> GradientDrawable.LINEAR_GRADIENT
+    "radial" -> GradientDrawable.RADIAL_GRADIENT
+    "sweep" -> GradientDrawable.SWEEP_GRADIENT
+    else -> GradientDrawable.LINEAR_GRADIENT
+}
+
+private fun String.toGradientOrientation() = when (this) {
+    "bl_tr" -> GradientDrawable.Orientation.BL_TR
+    "bt" -> GradientDrawable.Orientation.BOTTOM_TOP
+    "br_tl" -> GradientDrawable.Orientation.BR_TL
+    "lr" -> GradientDrawable.Orientation.LEFT_RIGHT
+    "rl" -> GradientDrawable.Orientation.RIGHT_LEFT
+    "tl_br" -> GradientDrawable.Orientation.TL_BR
+    "tb" -> GradientDrawable.Orientation.TOP_BOTTOM
+    "tr_bl" -> GradientDrawable.Orientation.TR_BL
+    else -> GradientDrawable.Orientation.LEFT_RIGHT
+}
+
 private fun View.setup(widget: Widget) {
     id = widget.id.toId()
-    setBackgroundColor(widget.color.toColor())
+    widget.color?.apply {
+        setBackgroundColor(toColor())
+    }
     val param = ConstraintLayout.LayoutParams(widget.width.toSize(context), widget.height.toSize(context))
     val constraint = widget.constraint
     val margin = widget.margin
@@ -156,5 +184,36 @@ fun Widget.toView(drawer: Drawer): View = when (this) {
             it.addView(toView(drawer))
         }
         it.radius = cardRadius.toSize(drawer.context)
+    }
+    is Shape -> View(drawer.context).also {
+        val bg = GradientDrawable()
+        shape?.apply {
+            bg.shape = toShape()
+        }
+        bg.setColor(fillColor.toColor())
+        bg.setStroke(
+            strokeWidth.toSize(drawer.context),
+            strokeColor.toColor(),
+            strokeLength.toSize(drawer.context).toFloat(),
+            strokeSpace.toSize(drawer.context).toFloat()
+        )
+        bg.cornerRadii = cornerRadii.flatMap { point ->
+            listOf(point.first, point.second)
+        }.map { size ->
+            size.toSize(drawer.context).toFloat()
+        }.toFloatArray()
+
+        gradient?.apply {
+            type?.apply {
+                bg.gradientType = toGradientType()
+            }
+            bg.colors = colors.map(String::toColor).toIntArray()
+            orientation?.apply {
+                bg.orientation = toGradientOrientation()
+            }
+            bg.gradientRadius = radius.toSize(drawer.context).toFloat()
+            bg.setGradientCenter(center.first, center.second)
+        }
+        it.background = bg
     }
 }.also { it.setup(this) }

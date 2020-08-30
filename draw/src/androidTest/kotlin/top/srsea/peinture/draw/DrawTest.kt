@@ -33,6 +33,7 @@ let Custom = Composite {
         cardRadius = '360dp'
         width = 'wrap'
         height = 'wrap'
+        color = '#00FFFFFF'
         Image {
             width = '300dp'
             height = '300dp'
@@ -57,15 +58,39 @@ Composite {
     // size = '300dp'  // width = height = '300dp'
     width = '300dp'
     height = 'wrap'
+    color = '#F6F6F6'
     Custom {
-        color = '#F6F6F6'
+        id = 2
         width = 'match'
         height = 'wrap'
         Constraint {
             ll = 'parent'
             rr = 'parent'
             tt = 'parent'
-            bb = 'parent'
+        }
+    }
+    Shape {
+        width = '300dp'
+        height = '60dp'
+        shape = 'oval'
+        fillColor = '#ffd566'
+        strokeColor = '#333333'
+        strokeWidth = '1pt'
+        strokeSpace = '10pt'
+        strokeLength = '20dp'
+        cornerRadii = [('10dp', '10dp'), ('10dp', '10dp'), ('10dp', '10dp'), ('10dp', '10dp')]
+        cornerRadius = '20dp'
+        Gradient {
+            colors = ['#ffffff', '#333333']
+            type = 'sweep'
+            orientation = 'bt'
+            radius = '10dp'
+            center = (0.6, 0.6)
+        }
+        Constraint {
+            ll = 'parent'
+            rr = 'parent'
+            tb = 2
         }
     }
 }

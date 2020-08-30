@@ -16,15 +16,25 @@
 
 package top.srsea.peinture.vlparser.analysis
 
-import top.srsea.peinture.vlparser.ast.Decl
-import top.srsea.peinture.vlparser.ast.Rhs
-import top.srsea.peinture.vlparser.ast.ValueRhs
+import top.srsea.peinture.vlparser.ast.*
 import top.srsea.peinture.vlparser.parse.Parser
 import top.srsea.peinture.vlparser.type.*
 
 open class AnalyzeException(msg: String) : Exception(msg)
 
 private fun Rhs.asString() = (this as? ValueRhs)?.value ?: throw AnalyzeException("expected an value rhs expression")
+
+private fun Rhs.asStringArray() = when (this) {
+    is TupleRhs -> items.map { it.asString() }.toTypedArray()
+    is ArrayRhs -> items.map { it.asString() }.toTypedArray()
+    else -> throw AnalyzeException("expected an array or tuple rhs expression")
+}
+
+private fun Rhs.asPairArray() = when (this) {
+    is TupleRhs -> items.map { it.asStringArray() }.map { it[0] to it[1] }.toTypedArray()
+    is ArrayRhs -> items.map { it.asStringArray() }.map { it[0] to it[1] }.toTypedArray()
+    else -> throw AnalyzeException("expected an array or tuple rhs expression")
+}
 
 class Analyzer(vl: String) {
     private val root = Parser(vl).parse()
@@ -41,6 +51,7 @@ class Analyzer(vl: String) {
         "Text" -> analyzeText(decl)
         "Image" -> analyzeImage(decl)
         "Card" -> analyzeCard(decl)
+        "Shape" -> analyzeShape(decl)
         in varMap -> varMap[decl.type]?.let { analyzeWidget(it) }
         else -> null
     }?.also { attachProps(it, decl) }
@@ -98,17 +109,36 @@ class Analyzer(vl: String) {
         }
     }
 
+    private fun analyzeShape(decl: Decl) = Shape().apply {
+        decl.props.forEach {
+            val value = it.value
+            when (it.name) {
+                "shape" -> shape = value.asString()
+                "fillColor" -> fillColor = value.asString()
+                "strokeColor" -> strokeColor = value.asString()
+                "strokeWidth" -> strokeWidth = value.asString()
+                "strokeLength" -> strokeLength = value.asString()
+                "strokeSpace" -> strokeSpace = value.asString()
+                "cornerRadii" -> cornerRadii = value.asPairArray()
+                "cornerRadius" -> cornerRadii = value.asString().let { size ->
+                    arrayOf(size to size, size to size, size to size, size to size)
+                }
+            }
+        }
+        gradient = obtainGradient(decl)
+    }
+
     private fun attachProps(widget: Widget, decl: Decl) {
         decl.props.forEach {
-            val value = it.value.asString()
+            val value = it.value
             when (it.name) {
-                "id" -> widget.id = value
-                "width" -> widget.width = value
-                "height" -> widget.height = value
-                "color" -> widget.color = value
+                "id" -> widget.id = value.asString()
+                "width" -> widget.width = value.asString()
+                "height" -> widget.height = value.asString()
+                "color" -> widget.color = value.asString()
                 "size" -> {
-                    widget.height = value
-                    widget.width = value
+                    widget.height = value.asString()
+                    widget.width = value.asString()
                 }
             }
         }
@@ -118,11 +148,9 @@ class Analyzer(vl: String) {
     }
 
     private fun obtainConstraint(decl: Decl) = Constraint().apply {
-        decl.decls.filter {
+        decl.decls.lastOrNull {
             it.type == "Constraint"
-        }.flatMap {
-            it.props
-        }.forEach {
+        }?.props?.forEach {
             val value = it.value.asString()
             when (it.name) {
                 "baseline" -> baseline = value
@@ -139,17 +167,36 @@ class Analyzer(vl: String) {
     }
 
     private fun obtainRect(decl: Decl, type: String) = Rect().apply {
-        decl.decls.filter {
+        decl.decls.lastOrNull {
             it.type == type
-        }.flatMap {
-            it.props
-        }.forEach {
+        }?.props?.forEach {
             val value = it.value.asString()
             when (it.name) {
                 "top" -> top = value
                 "bottom" -> bottom = value
                 "left" -> left = value
                 "right" -> right = value
+            }
+        }
+    }
+
+    private fun obtainGradient(decl: Decl): Gradient? {
+        val gradient = decl.decls.lastOrNull { it.type == "Gradient" }
+        gradient ?: return null
+        return Gradient().apply {
+            gradient.props.forEach { prop ->
+                val value = prop.value
+                when (prop.name) {
+                    "colors" -> colors = value.asStringArray()
+                    "type" -> type = value.asString()
+                    "orientation" -> orientation = value.asString()
+                    "radius" -> radius = value.asString()
+                    "center" -> center = value.asStringArray()
+                        .map(String::toFloat)
+                        .let {
+                            it[0] to it[1]
+                        }
+                }
             }
         }
     }

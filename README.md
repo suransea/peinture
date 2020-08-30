@@ -188,6 +188,39 @@ cardRadius // size
 ### Empty
 No specific arguments.
 
+### Shape
+```
+shape        // 'rectangle' or 'oval'
+fillColor    // ex: '#F6F6F6'
+strokeColor  // ex: '#333333'
+strokeWidth  // size
+strokeLength // size
+strokeSpace  // size
+cornerRadii  // ex: [('10dp', '10dp'), ('10dp', '10dp'), ('10dp', '10dp'), ('10dp', '10dp')]
+cornerRadius // size
+gradient     // declaration
+```
+
+#### Declaration
+
+##### Gradient
+```
+colors      // array, at least 2 items
+type        // 'linear'
+               'radial'
+               'sweep'
+orientation // 'bl_tr'
+               'bt'
+               'br_tl'
+               'lr'
+               'rl'
+               'tl_br'
+               'tb'
+               'tr_bl'
+radius      // radius for type "radial"
+center      // center point for type "sweep", ex: (0.5, 0.5)
+```
+
 ## License
 
 [Apache 2.0 License](http://www.apache.org/licenses/LICENSE-2.0)

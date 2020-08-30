@@ -25,7 +25,7 @@ sealed class Widget {
     var id = NO_ID
     var width = MATCH
     var height = MATCH
-    var color = TRANSPARENT
+    var color: String? = null
     var constraint = Constraint()
     var padding = Rect()
     var margin = Rect()
@@ -50,6 +50,14 @@ class Constraint {
     var bt = NO_ID
 }
 
+class Gradient {
+    var colors = arrayOf(TRANSPARENT, TRANSPARENT)
+    var type: String? = null
+    var orientation: String? = null
+    var radius = ZERO
+    var center = 0.5f to 0.5f
+}
+
 class Composite : Widget() {
     val widgets = mutableListOf<Widget>()
 }
@@ -71,4 +79,15 @@ class Text(val text: String) : Widget() {
 
 class Image(val src: String) : Widget() {
     var scaleType: String? = null
+}
+
+class Shape : Widget() {
+    var shape: String? = null
+    var fillColor = TRANSPARENT
+    var strokeColor = TRANSPARENT
+    var strokeWidth = ZERO
+    var strokeLength = ZERO
+    var strokeSpace = ZERO
+    var cornerRadii = arrayOf(ZERO to ZERO, ZERO to ZERO, ZERO to ZERO, ZERO to ZERO)
+    var gradient: Gradient? = null
 }
