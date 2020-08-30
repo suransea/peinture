@@ -39,6 +39,7 @@ class Rect {
 }
 
 class Constraint {
+    var baseline = NO_ID
     var ll = NO_ID
     var lr = NO_ID
     var tt = NO_ID
@@ -58,6 +59,11 @@ class Empty : Widget()
 class Text(val text: String) : Widget() {
     var textSize: String? = null
     var textColor: String? = null
+    var textStyle: String? = null
+    var deleteLine: Boolean? = null
+    var underLine: Boolean? = null
 }
 
-class Image(val src: String) : Widget()
+class Image(val src: String) : Widget() {
+    var scaleType: String? = null
+}

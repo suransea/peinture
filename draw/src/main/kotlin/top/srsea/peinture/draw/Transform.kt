@@ -18,6 +18,7 @@ package top.srsea.peinture.draw
 
 import android.content.Context
 import android.graphics.Color
+import android.graphics.Typeface
 import android.support.constraint.ConstraintLayout
 import android.util.TypedValue
 import android.view.View
@@ -26,45 +27,63 @@ import android.widget.ImageView
 import android.widget.TextView
 import top.srsea.peinture.vlparser.type.*
 
-private fun String.toId(): Int {
-    return when (this) {
-        "" -> ConstraintLayout.LayoutParams.UNSET
-        "parent" -> ConstraintLayout.LayoutParams.PARENT_ID
-        else -> toInt()
-    }
+private fun String.toId(): Int = when (this) {
+    "" -> ConstraintLayout.LayoutParams.UNSET
+    "parent" -> ConstraintLayout.LayoutParams.PARENT_ID
+    else -> toInt()
 }
 
-private fun String.toColor() = Color.parseColor(this)
+private fun String.toColor(): Int = Color.parseColor(this)
 
-private fun String.toSize(ctx: Context): Int {
-    return when {
-        this == "match" -> ViewGroup.LayoutParams.MATCH_PARENT
-        this == "wrap" -> ViewGroup.LayoutParams.WRAP_CONTENT
-        endsWith("dp") -> {
-            TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP, substring(0, length - 2).toFloat(),
-                ctx.resources.displayMetrics
-            ).toInt()
-        }
-        endsWith("sp") -> {
-            TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_SP, substring(0, length - 2).toFloat(),
-                ctx.resources.displayMetrics
-            ).toInt()
-        }
-        endsWith("pt") -> {
-            TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_PT, substring(0, length - 2).toFloat(),
-                ctx.resources.displayMetrics
-            ).toInt()
-        }
-        endsWith("px") -> {
-            substring(0, length - 2).toInt()
-        }
-        else -> toInt()
+private fun String.toSize(ctx: Context): Int = when {
+    this == "match" -> ViewGroup.LayoutParams.MATCH_PARENT
+    this == "wrap" -> ViewGroup.LayoutParams.WRAP_CONTENT
+    endsWith("dp") -> {
+        TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP, substring(0, length - 2).toFloat(),
+            ctx.resources.displayMetrics
+        ).toInt()
     }
+    endsWith("sp") -> {
+        TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_SP, substring(0, length - 2).toFloat(),
+            ctx.resources.displayMetrics
+        ).toInt()
+    }
+    endsWith("pt") -> {
+        TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_PT, substring(0, length - 2).toFloat(),
+            ctx.resources.displayMetrics
+        ).toInt()
+    }
+    endsWith("px") -> {
+        substring(0, length - 2).toInt()
+    }
+    else -> toInt()
 }
 
+private fun String.toTypeFace(): Typeface = when (this) {
+    "bold" -> Typeface.DEFAULT_BOLD
+    "monospace" -> Typeface.MONOSPACE
+    "sans_serif" -> Typeface.SANS_SERIF
+    "serif" -> Typeface.SERIF
+    "italic" -> Typeface.defaultFromStyle(Typeface.ITALIC)
+    "bold_italic" -> Typeface.defaultFromStyle(Typeface.BOLD_ITALIC)
+    "normal" -> Typeface.defaultFromStyle(Typeface.NORMAL)
+    else -> Typeface.DEFAULT
+}
+
+private fun String.toScaleType(): ImageView.ScaleType = when (this) {
+    "matrix" -> ImageView.ScaleType.MATRIX
+    "fit_xy" -> ImageView.ScaleType.FIT_XY
+    "fit_start" -> ImageView.ScaleType.FIT_START
+    "fit_center" -> ImageView.ScaleType.FIT_CENTER
+    "fit_end" -> ImageView.ScaleType.FIT_END
+    "center" -> ImageView.ScaleType.CENTER
+    "center_crop" -> ImageView.ScaleType.CENTER_CROP
+    "center_inside" -> ImageView.ScaleType.CENTER_INSIDE
+    else -> ImageView.ScaleType.MATRIX
+}
 
 private fun View.setup(widget: Widget) {
     id = widget.id.toId()
@@ -99,29 +118,36 @@ private fun View.setup(widget: Widget) {
     )
 }
 
-fun Widget.toView(drawer: Drawer): View {
-    val ctx = drawer.context
-    return when (this) {
-        is Composite -> ConstraintLayout(ctx).also {
-            widgets.forEach { widget ->
-                it.addView(widget.toView(drawer))
-            }
+fun Widget.toView(drawer: Drawer): View = when (this) {
+    is Composite -> ConstraintLayout(drawer.context).also {
+        widgets.forEach { widget ->
+            it.addView(widget.toView(drawer))
         }
-        is Text -> TextView(ctx).also {
-            it.text = text
-            textSize?.apply {
-                it.textSize = toSize(ctx).toFloat()
-            }
-            textColor?.apply {
-                it.setTextColor(toColor())
-            }
-        }
-        is Image -> ImageView(ctx).also {
-            it.adjustViewBounds = true
-            drawer.imageLoader.load(src, it)
-        }
-        is Empty -> View(ctx)
-    }.also {
-        it.setup(this)
     }
-}
+    is Text -> TextView(drawer.context).also {
+        it.text = text
+        textSize?.apply {
+            it.textSize = toSize(drawer.context).toFloat()
+        }
+        textColor?.apply {
+            it.setTextColor(toColor())
+        }
+        deleteLine?.apply {
+            it.paint.isStrikeThruText = this
+        }
+        underLine?.apply {
+            it.paint.isUnderlineText = this
+        }
+        textStyle?.apply {
+            it.typeface = toTypeFace()
+        }
+    }
+    is Image -> ImageView(drawer.context).also {
+        it.adjustViewBounds = true
+        scaleType?.apply {
+            it.scaleType = toScaleType()
+        }
+        drawer.imageLoader.load(src, it)
+    }
+    is Empty -> View(drawer.context)
+}.also { it.setup(this) }

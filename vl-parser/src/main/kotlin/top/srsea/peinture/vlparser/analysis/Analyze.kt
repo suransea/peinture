@@ -17,10 +17,14 @@
 package top.srsea.peinture.vlparser.analysis
 
 import top.srsea.peinture.vlparser.ast.Decl
+import top.srsea.peinture.vlparser.ast.Rhs
+import top.srsea.peinture.vlparser.ast.ValueRhs
 import top.srsea.peinture.vlparser.parse.Parser
 import top.srsea.peinture.vlparser.type.*
 
 open class AnalyzeException(msg: String) : Exception(msg)
+
+private fun Rhs.asString() = (this as? ValueRhs)?.value ?: throw AnalyzeException("expected an value rhs expression")
 
 class Analyzer(vl: String) {
     private val root = Parser(vl).parse()
@@ -31,52 +35,57 @@ class Analyzer(vl: String) {
             ?: throw AnalyzeException("unrecognized top level declaration \"${root.decl.type}\"")
     }
 
-    private fun analyzeWidget(decl: Decl): Widget? {
-        return when (decl.type) {
-            "Composite" -> analyzeComposite(decl)
-            "Empty" -> Empty()
-            "Text" -> analyzeText(decl)
-            "Image" -> analyzeImage(decl)
-            in varMap -> varMap[decl.type]?.let { analyzeWidget(it) }
-            else -> null
-        }?.also {
-            attachProps(it, decl)
-        }
-    }
+    private fun analyzeWidget(decl: Decl): Widget? = when (decl.type) {
+        "Composite" -> analyzeComposite(decl)
+        "Empty" -> Empty()
+        "Text" -> analyzeText(decl)
+        "Image" -> analyzeImage(decl)
+        in varMap -> varMap[decl.type]?.let { analyzeWidget(it) }
+        else -> null
+    }?.also { attachProps(it, decl) }
 
-    private fun analyzeComposite(decl: Decl): Composite {
-        return Composite().apply {
-            decl.decls.forEach {
-                analyzeWidget(it)?.also { widget ->
-                    widgets += widget
-                }
+    private fun analyzeComposite(decl: Decl) = Composite().apply {
+        decl.decls.forEach {
+            analyzeWidget(it)?.also { widget ->
+                widgets += widget
             }
         }
     }
 
     private fun analyzeText(decl: Decl): Text {
-        decl.arg ?: throw AnalyzeException("the view 'Text' require an argument")
-        return Text(decl.arg.literals).apply {
+        val text = decl.arg.items.getOrNull(0) as? ValueRhs
+            ?: throw AnalyzeException("the view 'Text' require an argument")
+        return Text(text.value).apply {
             decl.props.forEach {
-                val value = it.value.literals
+                val value = it.value.asString()
                 when (it.name) {
                     "textSize" -> textSize = value
                     "textColor" -> textColor = value
+                    "textStyle" -> textStyle = value
+                    "underLine" -> underLine = value.toBoolean()
+                    "deleteLine" -> deleteLine = value.toBoolean()
                 }
             }
         }
     }
 
     private fun analyzeImage(decl: Decl): Image {
-        val src = decl.props.lastOrNull { it.name == "src" }?.value?.literals
-            ?: decl.arg?.literals
+        val src = decl.props.lastOrNull { it.name == "src" }?.value
+            ?: decl.arg.items.getOrNull(0)
             ?: throw AnalyzeException("the view 'Image' require an argument 'src'")
-        return Image(src)
+        return Image(src.asString()).apply {
+            decl.props.forEach {
+                val value = it.value.asString()
+                when (it.name) {
+                    "scaleType" -> scaleType = value
+                }
+            }
+        }
     }
 
     private fun attachProps(widget: Widget, decl: Decl) {
         decl.props.forEach {
-            val value = it.value.literals
+            val value = it.value.asString()
             when (it.name) {
                 "id" -> widget.id = value
                 "width" -> widget.width = value
@@ -93,42 +102,39 @@ class Analyzer(vl: String) {
         widget.padding = obtainRect(decl, type = "Padding")
     }
 
-    private fun obtainConstraint(decl: Decl): Constraint {
-        return Constraint().apply {
-            decl.decls.filter {
-                it.type == "Constraint"
-            }.flatMap {
-                it.props
-            }.forEach {
-                val value = it.value.literals
-                when (it.name) {
-                    "ll" -> ll = value
-                    "lr" -> lr = value
-                    "tt" -> tt = value
-                    "tb" -> tb = value
-                    "rl" -> rl = value
-                    "rr" -> rr = value
-                    "bt" -> bt = value
-                    "bb" -> bb = value
-                }
+    private fun obtainConstraint(decl: Decl) = Constraint().apply {
+        decl.decls.filter {
+            it.type == "Constraint"
+        }.flatMap {
+            it.props
+        }.forEach {
+            val value = it.value.asString()
+            when (it.name) {
+                "baseline" -> baseline = value
+                "ll" -> ll = value
+                "lr" -> lr = value
+                "tt" -> tt = value
+                "tb" -> tb = value
+                "rl" -> rl = value
+                "rr" -> rr = value
+                "bt" -> bt = value
+                "bb" -> bb = value
             }
         }
     }
 
-    private fun obtainRect(decl: Decl, type: String): Rect {
-        return Rect().apply {
-            decl.decls.filter {
-                it.type == type
-            }.flatMap {
-                it.props
-            }.forEach {
-                val value = it.value.literals
-                when (it.name) {
-                    "top" -> top = value
-                    "bottom" -> bottom = value
-                    "left" -> left = value
-                    "right" -> right = value
-                }
+    private fun obtainRect(decl: Decl, type: String) = Rect().apply {
+        decl.decls.filter {
+            it.type == type
+        }.flatMap {
+            it.props
+        }.forEach {
+            val value = it.value.asString()
+            when (it.name) {
+                "top" -> top = value
+                "bottom" -> bottom = value
+                "left" -> left = value
+                "right" -> right = value
             }
         }
     }

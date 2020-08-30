@@ -17,6 +17,9 @@ let Custom = Composite {
         id = 1
         textSize = '12dp'
         textColor = '#333333'
+        underLine = true
+        deleteLine = true
+        textStyle = 'italic'
         Margin {
             top = '10dp'
         }
@@ -30,6 +33,7 @@ let Custom = Composite {
         width = 'match'
         height = 'wrap'
         src = 'https://w.wallhaven.cc/full/6k/wallhaven-6k3oox.jpg'
+        scaleType = 'fit_xy'
         Margin {
             top = '10dp'
         }

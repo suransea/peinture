@@ -29,7 +29,7 @@ dependencies {
 
 The DSL:
 
-```
+```javascript
 // Use keyword "let" to declare a custom view 
 let Custom = Composite {
     Text('Hello') {
@@ -51,6 +51,7 @@ let Custom = Composite {
         width = 'match'
         height = 'wrap'
         src = 'https://w.wallhaven.cc/full/6k/wallhaven-6k3oox.jpg'
+        scaleType = 'fit_xy'
         Margin {
             top = '10dp'
         }
@@ -110,7 +111,6 @@ The result:
 ## Widgets
 
 ### Common
-
 ```
 id          // integer
 width       // size, unit: dp, sp, pt, px, ex: '10dp'
@@ -121,50 +121,67 @@ padding     // declaration
 margin      // declaration
 ```
 
+#### Declaration
+
+##### Constraint
+```
+ll        // id or 'parent', left to left
+lr        // left to right
+tt        // top to top
+tb        // top to bottom
+rr        // right to right
+rl        // right to left
+bb        // bottom to bottom
+bt        // bottom to top
+```
+
+##### Padding
+```
+top       // size
+bottom    
+left      
+right     
+```
+
+##### Margin
+```
+top       // size
+bottom    
+left      
+right     
+```
+
 ### Text
 ```
 text       // the main argument
 textSize   // ex: '16sp'
 textColor  // ex: '#333333'
+textStyle  // string: 'bold'
+                      'monospace'
+                      'sans_serif'
+                      'serif'
+                      'italic'
+                      'bold_italic'
+                      'normal'
+deleteLine // boolean
+underLine  // boolean
 ```
 
 ### Image
 ```
 src        // image url, also as the main argument
+scyleType  // string: 'matrix'
+                      'fit_xy'
+                      'fit_start'
+                      'fit_center'
+                      'fit_end'
+                      'center'
+                      'center_crop'
+                      'center_inside'
 ```
 
 ### Empty
 No specific arguments.
-
-### Declaration
-
-#### Constraint
-```
-ll        // id or 'parent', left to left
-lr        // id or 'parent', left to right
-tt        // id or 'parent', top to top
-tb        // id or 'parent', top to bottom
-rr        // id or 'parent', right to right
-rl        // id or 'parent', right to left
-bb        // id or 'parent', bottom to bottom
-bt        // id or 'parent', bottom to top
-```
-
-#### Padding
-```
-top       // size
-bottom    // size
-left      // size
-right     // size
-```
-
-#### Margin
-```
-top       // size
-bottom    // size
-left      // size
-right     // size
-```
 
 ## License
 

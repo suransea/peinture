@@ -26,9 +26,12 @@ interface Token {
 enum class Symbol(override val literals: String) : Token {
     LPAREN("("),
     RPAREN(")"),
+    LBRACK("["),
+    RBRACK("]"),
     LBRACE("{"),
     RBRACE("}"),
     ASSIGN("="),
+    COMMA(",")
 }
 
 
@@ -56,7 +59,12 @@ private val keywordMap = Keyword.values().map { it.literals to it }.toMap()
 sealed class Literals : Token
 
 class IdentLit(override val literals: String) : Literals() {
-    internal fun tryToKeyword() = keywordMap[literals] ?: this
+    internal fun tryTransform() = when (literals) {
+        in keywordMap -> keywordMap[literals] ?: this
+        "true" -> BoolLit(literals)
+        "false" -> BoolLit(literals)
+        else -> this
+    }
 }
 
 sealed class ValueLit : Literals()
@@ -66,3 +74,5 @@ class IntLit(override val literals: String) : ValueLit()
 class FloatLit(override val literals: String) : ValueLit()
 
 class StringLit(override val literals: String) : ValueLit()
+
+class BoolLit(override val literals: String) : ValueLit()

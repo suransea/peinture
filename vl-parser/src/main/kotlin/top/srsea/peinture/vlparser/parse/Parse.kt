@@ -16,10 +16,7 @@
 
 package top.srsea.peinture.vlparser.parse
 
-import top.srsea.peinture.vlparser.ast.Decl
-import top.srsea.peinture.vlparser.ast.Prop
-import top.srsea.peinture.vlparser.ast.Root
-import top.srsea.peinture.vlparser.ast.Var
+import top.srsea.peinture.vlparser.ast.*
 import top.srsea.peinture.vlparser.lex.Lexer
 import top.srsea.peinture.vlparser.token.*
 import kotlin.reflect.KClass
@@ -56,11 +53,9 @@ class Parser(src: String) {
     }
 
     private fun parseDecl(type: IdentLit = expect()): Decl {
-        var arg = null as ValueLit?
+        var arg = TupleRhs()
         if (token == Symbol.LPAREN) {
-            expect(Symbol.LPAREN)
-            arg = expect()
-            expect(Symbol.RPAREN)
+            arg = parseTuple()
         }
         expect(Symbol.LBRACE)
         val props = mutableListOf<Prop>()
@@ -91,8 +86,42 @@ class Parser(src: String) {
 
     private fun parseProp(name: IdentLit): Prop {
         expect(Symbol.ASSIGN)
-        val value = expect<ValueLit>()
-        return Prop(name.literals, value)
+        return Prop(name.literals, parseRhs())
+    }
+
+    private fun parseRhs(): Rhs = when (token) {
+        is ValueLit -> ValueRhs(expect<ValueLit>().literals)
+        Symbol.LPAREN -> parseTuple()
+        Symbol.LBRACK -> parseArray()
+        else -> throw ParseException(
+            "expected a rhs expression, actual token is ${token::class.simpleName} \"${token.literals}\""
+        )
+    }
+
+    private fun parseTuple(): TupleRhs {
+        expect(Symbol.LPAREN)
+        val rhs = mutableListOf<Rhs>()
+        while (token != Symbol.RPAREN) {
+            rhs += parseRhs()
+            if (token == Symbol.COMMA) {
+                expect(Symbol.COMMA)
+            }
+        }
+        expect(Symbol.RPAREN)
+        return TupleRhs(rhs)
+    }
+
+    private fun parseArray(): ArrayRhs {
+        expect(Symbol.LBRACK)
+        val rhs = mutableListOf<Rhs>()
+        while (token != Symbol.RBRACK) {
+            rhs += parseRhs()
+            if (token == Symbol.COMMA) {
+                expect(Symbol.COMMA)
+            }
+        }
+        expect(Symbol.RBRACK)
+        return ArrayRhs(rhs)
     }
 
     private inline fun <reified T : Token> expect(): T {

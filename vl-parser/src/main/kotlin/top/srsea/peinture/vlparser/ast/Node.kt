@@ -16,28 +16,38 @@
 
 package top.srsea.peinture.vlparser.ast
 
-import top.srsea.peinture.vlparser.token.ValueLit
-
-interface Node
+sealed class Node
 
 class Root(
     val decl: Decl,
     val vars: List<Var> = emptyList()
-) : Node
+) : Node()
+
+sealed class Rhs : Node()
+
+class ValueRhs(val value: String) : Rhs()
+
+class TupleRhs(
+    val items: List<Rhs> = emptyList()
+) : Rhs()
+
+class ArrayRhs(
+    val items: List<Rhs> = emptyList()
+) : Rhs()
 
 class Decl(
     val type: String,
-    val arg: ValueLit? = null,
+    val arg: TupleRhs = TupleRhs(),
     val props: List<Prop> = emptyList(),
     val decls: List<Decl> = emptyList()
-) : Node
+) : Node()
 
 class Var(
     val name: String,
     val decl: Decl
-) : Node
+) : Node()
 
 class Prop(
     val name: String,
-    val value: ValueLit
-) : Node
+    val value: Rhs
+) : Node()

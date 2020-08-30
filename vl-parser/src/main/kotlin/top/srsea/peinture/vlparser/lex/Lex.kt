@@ -42,7 +42,7 @@ class Lexer(src: String) {
     fun lex(): Token {
         skipWhitespace()
         return when {
-            ch.isLetter() -> lexIdent().tryToKeyword()
+            ch.isLetter() -> lexIdent().tryTransform()
             ch.isDecimal() -> lexNumber()
             else -> when (ch) {
                 '-' -> lexNumber()
@@ -50,9 +50,12 @@ class Lexer(src: String) {
                 '/' -> lexComment()
                 '(' -> lexTo(Symbol.LPAREN)
                 ')' -> lexTo(Symbol.RPAREN)
+                '[' -> lexTo(Symbol.LBRACK)
+                ']' -> lexTo(Symbol.RBRACK)
                 '{' -> lexTo(Symbol.LBRACE)
                 '}' -> lexTo(Symbol.RBRACE)
                 '=' -> lexTo(Symbol.ASSIGN)
+                ',' -> lexTo(Symbol.COMMA)
                 END -> lexTo(Special.END)
                 else -> lexTo(Special.ILLEGAL)
             }

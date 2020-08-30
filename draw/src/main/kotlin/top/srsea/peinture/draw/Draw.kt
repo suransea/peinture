@@ -25,12 +25,10 @@ import android.widget.ImageView
 import com.bumptech.glide.Glide
 import top.srsea.peinture.vlparser.analysis.Analyzer
 
-private fun Int.toMeasureSpec(): Int {
-    return when (this) {
-        ViewGroup.LayoutParams.MATCH_PARENT -> View.MeasureSpec.AT_MOST
-        ViewGroup.LayoutParams.WRAP_CONTENT -> View.MeasureSpec.UNSPECIFIED
-        else -> View.MeasureSpec.makeMeasureSpec(this, View.MeasureSpec.EXACTLY)
-    }
+private fun Int.toMeasureSpec(): Int = when (this) {
+    ViewGroup.LayoutParams.MATCH_PARENT -> View.MeasureSpec.AT_MOST
+    ViewGroup.LayoutParams.WRAP_CONTENT -> View.MeasureSpec.UNSPECIFIED
+    else -> View.MeasureSpec.makeMeasureSpec(this, View.MeasureSpec.EXACTLY)
 }
 
 class Drawer(val context: Context, val imageLoader: ImageLoader = GladeBlockingImageLoader) {
