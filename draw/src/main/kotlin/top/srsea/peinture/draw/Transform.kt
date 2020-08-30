@@ -25,6 +25,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import top.srsea.peinture.draw.view.CardView
 import top.srsea.peinture.vlparser.type.*
 
 private fun String.toId(): Int = when (this) {
@@ -150,4 +151,10 @@ fun Widget.toView(drawer: Drawer): View = when (this) {
         drawer.imageLoader.load(src, it)
     }
     is Empty -> View(drawer.context)
+    is Card -> CardView(drawer.context).also {
+        widget?.apply {
+            it.addView(toView(drawer))
+        }
+        it.radius = cardRadius.toSize(drawer.context)
+    }
 }.also { it.setup(this) }

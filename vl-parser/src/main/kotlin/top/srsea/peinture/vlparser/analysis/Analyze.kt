@@ -40,6 +40,7 @@ class Analyzer(vl: String) {
         "Empty" -> Empty()
         "Text" -> analyzeText(decl)
         "Image" -> analyzeImage(decl)
+        "Card" -> analyzeCard(decl)
         in varMap -> varMap[decl.type]?.let { analyzeWidget(it) }
         else -> null
     }?.also { attachProps(it, decl) }
@@ -79,6 +80,20 @@ class Analyzer(vl: String) {
                 when (it.name) {
                     "scaleType" -> scaleType = value
                 }
+            }
+        }
+    }
+
+    private fun analyzeCard(decl: Decl) = Card().apply {
+        decl.decls.forEach {
+            analyzeWidget(it)?.also { analyzedWidget ->
+                widget = analyzedWidget
+            }
+        }
+        decl.props.forEach {
+            val value = it.value.asString()
+            when (it.name) {
+                "cardRadius" -> cardRadius = value
             }
         }
     }

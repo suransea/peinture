@@ -29,11 +29,16 @@ let Custom = Composite {
             tt = 'parent'
         }
     }
-    Image {
-        width = 'match'
+    Card {
+        cardRadius = '360dp'
+        width = 'wrap'
         height = 'wrap'
-        src = 'https://w.wallhaven.cc/full/6k/wallhaven-6k3oox.jpg'
-        scaleType = 'fit_xy'
+        Image {
+            width = '300dp'
+            height = '300dp'
+            src = 'https://w.wallhaven.cc/full/6k/wallhaven-6k3oox.jpg'
+            scaleType = 'center_crop'
+        }
         Margin {
             top = '10dp'
         }

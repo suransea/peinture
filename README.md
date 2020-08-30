@@ -170,7 +170,7 @@ underLine  // boolean
 ### Image
 ```
 src        // image url, also as the main argument
-scyleType  // string: 'matrix'
+scaleType  // string: 'matrix'
                       'fit_xy'
                       'fit_start'
                       'fit_center'
@@ -178,6 +178,11 @@ scyleType  // string: 'matrix'
                       'center'
                       'center_crop'
                       'center_inside'
+```
+
+### Card
+```
+cardRadius // size
 ```
 
 ### Empty

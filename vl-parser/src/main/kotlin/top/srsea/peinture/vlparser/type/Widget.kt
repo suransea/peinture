@@ -54,6 +54,11 @@ class Composite : Widget() {
     val widgets = mutableListOf<Widget>()
 }
 
+class Card : Widget() {
+    var widget: Widget? = null
+    var cardRadius = ZERO
+}
+
 class Empty : Widget()
 
 class Text(val text: String) : Widget() {
