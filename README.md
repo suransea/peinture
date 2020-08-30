@@ -151,6 +151,16 @@ left
 right     
 ```
 
+##### Transform 
+```
+pivot        // scale and rotation pivot, ex: ('200dp', 0)
+scroll       // (x, y)
+translation  // (x, y, z)
+scale        // (x, y)
+rotation     // (x, y, z)
+alpha        // float in [0, 1], 0 is transparent
+```
+
 ### Text
 ```
 text       // the main argument
@@ -165,6 +175,7 @@ textStyle  // string: 'bold'
                       'normal'
 deleteLine // boolean
 underLine  // boolean
+maxLines   // integer
 ```
 
 ### Image

@@ -68,24 +68,26 @@ Composite {
             rr = 'parent'
             tt = 'parent'
         }
+        Transform {
+            alpha = 0.5
+        }
     }
-    Shape {
+    Composite {
         width = '300dp'
         height = '60dp'
-        shape = 'oval'
-        fillColor = '#ffd566'
-        strokeColor = '#333333'
-        strokeWidth = '1pt'
-        strokeSpace = '10pt'
-        strokeLength = '20dp'
-        cornerRadii = [('10dp', '10dp'), ('10dp', '10dp'), ('10dp', '10dp'), ('10dp', '10dp')]
-        cornerRadius = '20dp'
-        Gradient {
-            colors = ['#ffffff', '#333333']
-            type = 'sweep'
-            orientation = 'bt'
-            radius = '10dp'
-            center = (0.6, 0.6)
+        Shape {
+            width = '200dp'
+            height = '400dp'
+            shape = 'rectangle'
+            fillColor = '#ffd566'
+            Constraint {
+                ll = 'parent'
+                tt = 'parent'
+            }
+            Transform {
+                pivot = ('200dp', 0)
+                rotation = (0, 0, 10)
+            }
         }
         Constraint {
             ll = 'parent'

@@ -21,6 +21,7 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.support.constraint.ConstraintLayout
+import android.text.TextUtils
 import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
@@ -145,6 +146,26 @@ private fun View.setup(widget: Widget) {
         padding.right.toSize(context),
         padding.bottom.toSize(context)
     )
+
+    widget.transform?.apply {
+        pivot?.apply {
+            pivotX = first.toSize(context).toFloat()
+            pivotY = second.toSize(context).toFloat()
+        }
+        scaleX = scale.first
+        scaleY = scale.second
+        rotationX = rotation.first
+        rotationY = rotation.second
+        this@setup.rotation = rotation.third
+        scrollX = scroll.first.toSize(context)
+        scrollY = scroll.second.toSize(context)
+        translationX = translation.first.toSize(context).toFloat()
+        translationY = translation.second.toSize(context).toFloat()
+        translationZ = translation.third.toSize(context).toFloat()
+        alpha?.apply {
+            setAlpha(this)
+        }
+    }
 }
 
 fun Widget.toView(drawer: Drawer): View = when (this) {
@@ -156,7 +177,7 @@ fun Widget.toView(drawer: Drawer): View = when (this) {
     is Text -> TextView(drawer.context).also {
         it.text = text
         textSize?.apply {
-            it.textSize = toSize(drawer.context).toFloat()
+            it.textSize = toSize(it.context).toFloat()
         }
         textColor?.apply {
             it.setTextColor(toColor())
@@ -170,6 +191,10 @@ fun Widget.toView(drawer: Drawer): View = when (this) {
         textStyle?.apply {
             it.typeface = toTypeFace()
         }
+        maxLines?.apply {
+            it.maxLines = this
+        }
+        it.ellipsize = TextUtils.TruncateAt.END
     }
     is Image -> ImageView(drawer.context).also {
         it.adjustViewBounds = true
@@ -183,7 +208,7 @@ fun Widget.toView(drawer: Drawer): View = when (this) {
         widget?.apply {
             it.addView(toView(drawer))
         }
-        it.radius = cardRadius.toSize(drawer.context)
+        it.radius = cardRadius.toSize(it.context)
     }
     is Shape -> View(drawer.context).also {
         val bg = GradientDrawable()
@@ -192,15 +217,15 @@ fun Widget.toView(drawer: Drawer): View = when (this) {
         }
         bg.setColor(fillColor.toColor())
         bg.setStroke(
-            strokeWidth.toSize(drawer.context),
+            strokeWidth.toSize(it.context),
             strokeColor.toColor(),
-            strokeLength.toSize(drawer.context).toFloat(),
-            strokeSpace.toSize(drawer.context).toFloat()
+            strokeLength.toSize(it.context).toFloat(),
+            strokeSpace.toSize(it.context).toFloat()
         )
         bg.cornerRadii = cornerRadii.flatMap { point ->
-            listOf(point.first, point.second)
+            point.toList()
         }.map { size ->
-            size.toSize(drawer.context).toFloat()
+            size.toSize(it.context).toFloat()
         }.toFloatArray()
 
         gradient?.apply {
@@ -211,7 +236,7 @@ fun Widget.toView(drawer: Drawer): View = when (this) {
             orientation?.apply {
                 bg.orientation = toGradientOrientation()
             }
-            bg.gradientRadius = radius.toSize(drawer.context).toFloat()
+            bg.gradientRadius = radius.toSize(it.context).toFloat()
             bg.setGradientCenter(center.first, center.second)
         }
         it.background = bg

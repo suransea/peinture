@@ -26,6 +26,7 @@ sealed class Widget {
     var width = MATCH
     var height = MATCH
     var color: String? = null
+    var transform: Transform? = null
     var constraint = Constraint()
     var padding = Rect()
     var margin = Rect()
@@ -48,6 +49,15 @@ class Constraint {
     var rl = NO_ID
     var bb = NO_ID
     var bt = NO_ID
+}
+
+class Transform {
+    var pivot: Pair<String, String>? = null
+    var scroll = ZERO to ZERO
+    var translation = Triple(ZERO, ZERO, ZERO)
+    var scale = 1f to 1f
+    var rotation = Triple(0f, 0f, 0f)
+    var alpha: Float? = null
 }
 
 class Gradient {
@@ -75,6 +85,7 @@ class Text(val text: String) : Widget() {
     var textStyle: String? = null
     var deleteLine: Boolean? = null
     var underLine: Boolean? = null
+    var maxLines: Int? = null
 }
 
 class Image(val src: String) : Widget() {

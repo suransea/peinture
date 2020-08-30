@@ -36,6 +36,18 @@ private fun Rhs.asPairArray() = when (this) {
     else -> throw AnalyzeException("expected an array or tuple rhs expression")
 }
 
+private fun Rhs.asPair() = when (this) {
+    is TupleRhs -> items.map { it.asString() }.let { it[0] to it[1] }
+    is ArrayRhs -> items.map { it.asString() }.let { it[0] to it[1] }
+    else -> throw AnalyzeException("expected an array or tuple rhs expression")
+}
+
+private fun Rhs.asTriple() = when (this) {
+    is TupleRhs -> items.map { it.asString() }.let { Triple(it[0], it[1], it[2]) }
+    is ArrayRhs -> items.map { it.asString() }.let { Triple(it[0], it[1], it[2]) }
+    else -> throw AnalyzeException("expected an array or tuple rhs expression")
+}
+
 class Analyzer(vl: String) {
     private val root = Parser(vl).parse()
     private val varMap = root.vars.map { it.name to it.decl }.toMap()
@@ -76,6 +88,7 @@ class Analyzer(vl: String) {
                     "textStyle" -> textStyle = value
                     "underLine" -> underLine = value.toBoolean()
                     "deleteLine" -> deleteLine = value.toBoolean()
+                    "maxLines" -> maxLines = value.toInt()
                 }
             }
         }
@@ -145,6 +158,7 @@ class Analyzer(vl: String) {
         widget.constraint = obtainConstraint(decl)
         widget.margin = obtainRect(decl, type = "Margin")
         widget.padding = obtainRect(decl, type = "Padding")
+        widget.transform = obtainTransform(decl)
     }
 
     private fun obtainConstraint(decl: Decl) = Constraint().apply {
@@ -162,6 +176,23 @@ class Analyzer(vl: String) {
                 "rr" -> rr = value
                 "bt" -> bt = value
                 "bb" -> bb = value
+            }
+        }
+    }
+
+    private fun obtainTransform(decl: Decl) = Transform().apply {
+        decl.decls.lastOrNull {
+            it.type == "Transform"
+        }?.props?.forEach {
+            val value = it.value
+            when (it.name) {
+                "pivot" -> pivot = value.asPair()
+                "scroll" -> scroll = value.asPair()
+                "translation" -> translation = value.asTriple()
+                "scale" -> scale = value.asPair().run { first.toFloat() to second.toFloat() }
+                "rotation" -> rotation = value.asTriple()
+                    .run { Triple(first.toFloat(), second.toFloat(), third.toFloat()) }
+                "alpha" -> alpha = value.asString().toFloat()
             }
         }
     }
