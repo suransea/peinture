@@ -119,6 +119,7 @@ color       // background color, ex: '#FFFFFF'
 constraint  // declaration
 padding     // declaration
 margin      // declaration
+transform   // declaration
 ```
 
 #### Declaration
