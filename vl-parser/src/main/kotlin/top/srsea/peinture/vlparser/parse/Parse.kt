@@ -60,7 +60,7 @@ class Parser(src: String) {
         expect(Symbol.LBRACE)
         val props = mutableListOf<Prop>()
         val decls = mutableListOf<Decl>()
-        while (true) {
+        loop@ while (true) {
             if (token == Symbol.RBRACE) {
                 break
             }
@@ -68,7 +68,7 @@ class Parser(src: String) {
             when (token) {
                 Symbol.ASSIGN -> props += parseProp(ident)
                 Symbol.LPAREN, Symbol.LBRACE -> decls += parseDecl(ident)
-                is IdentLit, Symbol.RBRACE -> continue
+                is IdentLit, Symbol.RBRACE -> continue@loop
                 else -> expect(Symbol.ASSIGN)
             }
         }
