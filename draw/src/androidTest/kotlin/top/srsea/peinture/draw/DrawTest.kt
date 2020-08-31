@@ -1,6 +1,5 @@
 package top.srsea.peinture.draw
 
-import android.graphics.Bitmap
 import android.os.Handler
 import android.os.Looper
 import android.support.test.InstrumentationRegistry
@@ -104,7 +103,7 @@ class DrawTest {
     fun testDraw() {
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
         val drawer = Drawer(appContext)
-        val bitmap = drawer.drawBitmap(vl, Bitmap.Config.RGB_565)
+        val bitmap = drawer.drawBitmap(vl)
         println(bitmap)
     }
 

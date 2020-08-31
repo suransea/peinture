@@ -33,7 +33,7 @@ private fun Int.toMeasureSpec(): Int = when (this) {
 
 class Drawer(val context: Context, val imageLoader: ImageLoader = GladeBlockingImageLoader) {
 
-    fun drawBitmap(vl: String, config: Bitmap.Config): Bitmap {
+    fun drawBitmap(vl: String, config: Bitmap.Config = Bitmap.Config.ARGB_8888): Bitmap {
         val rootView = drawView(vl)
         val width = rootView.layoutParams.width
         val height = rootView.layoutParams.height
