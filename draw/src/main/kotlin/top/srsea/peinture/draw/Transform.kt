@@ -129,6 +129,7 @@ private fun View.setup(widget: Widget) {
         bottomMargin = margin.bottom.toSize(context)
 
         // constraint
+        baselineToBaseline = constraint.baseline.toId()
         topToTop = constraint.tt.toId()
         topToBottom = constraint.tb.toId()
         leftToLeft = constraint.ll.toId()
