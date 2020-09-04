@@ -29,7 +29,7 @@ class UnexpectedTokenException(expected: KClass<out Token>, actual: Token) : Par
 
 class Parser(src: String) {
     private val lexer = Lexer(src)
-    private var token = Special.END as Token
+    private var token = End as Token
 
     init {
         next()
@@ -38,7 +38,7 @@ class Parser(src: String) {
     fun parse(): Root {
         val vars = mutableListOf<Var>()
         var decl = null as Decl?
-        while (token != Special.END) {
+        while (token != End) {
             when (token) {
                 Keyword.LET -> vars += parseVar()
                 is IdentLit -> {

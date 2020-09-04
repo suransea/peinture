@@ -56,8 +56,8 @@ class Lexer(src: String) {
                 '}' -> lexTo(Symbol.RBRACE)
                 '=' -> lexTo(Symbol.ASSIGN)
                 ',' -> lexTo(Symbol.COMMA)
-                END -> lexTo(Special.END)
-                else -> lexTo(Special.ILLEGAL)
+                END -> lexTo(End)
+                else -> lexTo(Illegal)
             }
         }
     }
@@ -97,15 +97,13 @@ class Lexer(src: String) {
             if (ch == '\n') {
                 throw LexException("unexpected char '\\n' at pos $pos")
             }
-            if (ch == '\\') {
-                if (peek() == beginChar) {
-                    next()
-                }
+            if (ch == '\\' && peek() == beginChar) {
+                next()
             }
             next()
         }
         if (ch == END) {
-            throw LexException("expected the terminal char '$beginChar' from pos $begin")
+            throw LexException("expected the terminal char '$beginChar' from pos ${begin - 1}")
         }
         return StringLit(literalsFrom(begin)).also {
             next() // consume terminal char
@@ -117,7 +115,7 @@ class Lexer(src: String) {
         next()
         when (ch) {
             '/' -> {
-                nextWhen { ch != '\n' }
+                nextUntil { ch == '\n' }
                 return Comment(literalsFrom(begin))
             }
             '*' -> {

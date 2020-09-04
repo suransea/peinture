@@ -37,12 +37,17 @@ enum class Symbol(override val literals: String) : Token {
 
 // special tokens
 
-enum class Special(override val literals: String) : Token {
-    END("END"),
-    ILLEGAL("ILLEGAL"),
+sealed class Special : Token
+
+object End : Special() {
+    override val literals = "END"
 }
 
-class Comment(override val literals: String) : Token
+object Illegal : Special() {
+    override val literals = "ILLEGAL"
+}
+
+class Comment(override val literals: String) : Special()
 
 
 // keywords

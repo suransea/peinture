@@ -2,7 +2,8 @@ import org.junit.Test
 import top.srsea.peinture.vlparser.analysis.Analyzer
 import top.srsea.peinture.vlparser.lex.Lexer
 import top.srsea.peinture.vlparser.parse.Parser
-import top.srsea.peinture.vlparser.token.Special
+import top.srsea.peinture.vlparser.token.End
+import top.srsea.peinture.vlparser.token.Illegal
 import top.srsea.peinture.vlparser.token.Token
 
 class VLParserTest {
@@ -16,8 +17,7 @@ class VLParserTest {
             val token = lexer.lex()
             tokens.add(token)
         } while (
-            token != Special.ILLEGAL &&
-            token != Special.END
+            token != Illegal && token != End
         )
         tokens.map { it::class.simpleName to it.literals }.forEach { println(it) }
     }
