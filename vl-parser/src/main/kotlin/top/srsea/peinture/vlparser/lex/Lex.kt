@@ -42,7 +42,7 @@ class Lexer(src: String) {
     fun lex(): Token {
         skipWhitespace()
         return when {
-            ch.isLetter() -> lexIdent().tryTransform()
+            ch.isLetter() -> lexIdentSimilar()
             ch.isDecimal() -> lexNumber()
             else -> when (ch) {
                 '-' -> lexNumber()
@@ -62,13 +62,13 @@ class Lexer(src: String) {
         }
     }
 
-    private fun lexIdent(): IdentLit {
+    private fun lexIdentSimilar(): Token {
         val begin = pos
         nextWhen { ch.isIdentPart() }
-        return IdentLit(literalsFrom(begin))
+        return IdentLit(literalsFrom(begin)).tryTransform()
     }
 
-    private fun lexNumber(): Literals {
+    private fun lexNumber(): ValueLit {
         val begin = pos
         if (ch == '-') {
             next()
@@ -107,9 +107,9 @@ class Lexer(src: String) {
         if (ch == END) {
             throw LexException("expected the terminal char '$beginChar' from pos $begin")
         }
-        val result = StringLit(literalsFrom(begin))
-        next() // consume terminal char
-        return result
+        return StringLit(literalsFrom(begin)).also {
+            next() // consume terminal char
+        }
     }
 
     private fun lexComment(): Comment {
