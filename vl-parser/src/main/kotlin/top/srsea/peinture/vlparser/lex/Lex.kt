@@ -142,11 +142,11 @@ class Lexer(src: String) {
     }
 
     private fun nextWhen(pred: () -> Boolean) {
-        while (pred()) next()
+        while (pred() && ch != END) next()
     }
 
     private fun nextUntil(pred: () -> Boolean) {
-        while (!pred()) next()
+        while (!pred() && ch != END) next()
     }
 
     private fun skipWhitespace() {
