@@ -37,33 +37,26 @@ class Parser(src: String) {
 
     fun parse(): Root {
         val vars = mutableListOf<Var>()
-        var decl = null as Decl?
+        val decls = mutableListOf<Decl>()
         while (token != End) {
             when (token) {
                 Keyword.LET -> vars += parseVar()
                 is IdentLit -> {
-                    decl?.also { throw ParseException("at most one root declaration") }
-                    decl = parseDecl()
+                    decls += parseDecl()
                 }
                 else -> throw ParseException("expected a ident or \"let\"")
             }
         }
-        decl ?: throw ParseException("at least one root declaration")
-        return Root(decl, vars)
+        return decls.takeIf { it.size == 1 }?.let { Root(it[0], vars) }
+            ?: throw ParseException("expected one top declaration, actual count is ${decls.size}")
     }
 
     private fun parseDecl(type: IdentLit = expect()): Decl {
-        var arg = TupleRhs()
-        if (token == Symbol.LPAREN) {
-            arg = parseTuple()
-        }
+        val arg = if (token == Symbol.LPAREN) parseTuple() else TupleRhs()
         expect(Symbol.LBRACE)
         val props = mutableListOf<Prop>()
         val decls = mutableListOf<Decl>()
-        loop@ while (true) {
-            if (token == Symbol.RBRACE) {
-                break
-            }
+        loop@ while (token != Symbol.RBRACE) {
             val ident = expect<IdentLit>()
             when (token) {
                 Symbol.ASSIGN -> props += parseProp(ident)
@@ -80,8 +73,7 @@ class Parser(src: String) {
         expect(Keyword.LET)
         val name = expect<IdentLit>()
         expect(Symbol.ASSIGN)
-        val decl = parseDecl()
-        return Var(name.literals, decl)
+        return Var(name.literals, parseDecl())
     }
 
     private fun parseProp(name: IdentLit): Prop {
@@ -125,19 +117,19 @@ class Parser(src: String) {
     }
 
     private inline fun <reified T : Token> expect(): T {
-        val tok = token
-        if (tok !is T) {
-            throw UnexpectedTokenException(T::class, tok)
+        val current = token
+        if (current !is T) {
+            throw UnexpectedTokenException(T::class, current)
         }
-        return tok.also { next() }
+        return current.also { next() }
     }
 
-    private fun expect(token: Token): Token {
-        val tok = this.token
-        if (tok != token) {
-            throw UnexpectedTokenException(token::class, tok)
+    private fun expect(expected: Token): Token {
+        val current = token
+        if (current != expected) {
+            throw UnexpectedTokenException(expected::class, current)
         }
-        return tok.also { next() }
+        return current.also { next() }
     }
 
     private fun next() {
