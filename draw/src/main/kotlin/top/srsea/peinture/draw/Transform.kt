@@ -39,7 +39,7 @@ private fun String.toId(): Int = when (this) {
 private fun String.toColor(): Int = Color.parseColor(this)
 
 private fun String.toSize(ctx: Context): Int = when {
-    this == "match" -> ViewGroup.LayoutParams.MATCH_PARENT
+    this == "match" || this.isEmpty() -> ViewGroup.LayoutParams.MATCH_PARENT
     this == "wrap" -> ViewGroup.LayoutParams.WRAP_CONTENT
     endsWith("dp") -> {
         TypedValue.applyDimension(
@@ -129,15 +129,15 @@ private fun View.setup(widget: Widget) {
         bottomMargin = margin.bottom.toSize(context)
 
         // constraint
-        baselineToBaseline = constraint.baseline.toId()
-        topToTop = constraint.tt.toId()
-        topToBottom = constraint.tb.toId()
-        leftToLeft = constraint.ll.toId()
-        leftToRight = constraint.lr.toId()
-        rightToRight = constraint.rr.toId()
-        rightToLeft = constraint.rl.toId()
-        bottomToBottom = constraint.bb.toId()
-        bottomToTop = constraint.bt.toId()
+        baselineToBaseline = constraint.baselineToBaseLine.toId()
+        topToTop = constraint.topToTop.toId()
+        topToBottom = constraint.topToBottom.toId()
+        leftToLeft = constraint.leftToLeft.toId()
+        leftToRight = constraint.leftToRight.toId()
+        rightToRight = constraint.rightToRight.toId()
+        rightToLeft = constraint.rightToLeft.toId()
+        bottomToBottom = constraint.bottomToBottom.toId()
+        bottomToTop = constraint.bottomToTop.toId()
     }
 
     val padding = widget.padding

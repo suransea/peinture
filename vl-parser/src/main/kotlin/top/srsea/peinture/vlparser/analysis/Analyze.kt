@@ -165,15 +165,15 @@ class Analyzer(vl: String) {
                     height = value.asString()
                     width = value.asString()
                 }
-                "baseline" -> baseline = value.asString()
-                "ll" -> ll = value.asString()
-                "lr" -> lr = value.asString()
-                "tt" -> tt = value.asString()
-                "tb" -> tb = value.asString()
-                "rl" -> rl = value.asString()
-                "rr" -> rr = value.asString()
-                "bt" -> bt = value.asString()
-                "bb" -> bb = value.asString()
+                "baselineToBaseline" -> baselineToBaseLine = value.asString()
+                "leftToLeft" -> leftToLeft = value.asString()
+                "leftToRight" -> leftToRight = value.asString()
+                "topToTop" -> topToTop = value.asString()
+                "topToBottom" -> topToBottom = value.asString()
+                "rightToLeft" -> rightToLeft = value.asString()
+                "rightToRight" -> rightToRight = value.asString()
+                "bottomToTop" -> bottomToTop = value.asString()
+                "bottomToBottom" -> bottomToBottom = value.asString()
             }
         }
         constraintDecl?.also {

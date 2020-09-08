@@ -39,9 +39,9 @@ let Custom = Composite {
         Constraint {
             width = 'wrap'
             height = 'wrap'
-            ll = 'parent'
-            rr = 'parent'
-            tt = 'parent'
+            leftToLeft = 'parent'
+            rightToRight = 'parent'
+            topToTop = 'parent'
             Margin {
                 top = '10dp'
             }
@@ -53,9 +53,9 @@ let Custom = Composite {
         Constraint {
             width = 'match'
             height = 'wrap'
-            ll = 'parent'
-            rr = 'parent'
-            tb = 1
+            leftToLeft = 'parent'
+            rightToRight = 'parent'
+            topToBottom = 1
             Margin {
                 top = '10dp'
             }
@@ -72,10 +72,10 @@ Composite {
         Constraint {
             width = 'match'
             height = 'wrap'
-            ll = 'parent'
-            rr = 'parent'
-            tt = 'parent'
-            bb = 'parent'
+            leftToLeft = 'parent'
+            rightToRight = 'parent'
+            topToTop = 'parent'
+            bottomToBottom = 'parent'
         }
     }
     Constraint {
@@ -125,18 +125,17 @@ transform   // declaration
 
 ##### Constraint
 ```
-width     // size, unit: dp, sp, pt, px, ex: '10dp'
-height    // size
-margin    // declaration
-ll        // id or 'parent', left to left
-lr        // left to right
-tt        // top to top
-tb        // top to bottom
-rr        // right to right
-rl        // right to left
-bb        // bottom to bottom
-bt        // bottom to top
-baseline  // baseline to baseline
+width                 // size, unit: dp, sp, pt, px, ex: '10dp'
+height                // size
+margin                // declaration
+topToTop              // id or 'parent'
+topToBottom       
+leftToLeft        
+leftToRight       
+rightToRight      
+rightToLeft       
+bottomToBottom   
+baselineToBaseline     
 ```
 
 ##### Padding

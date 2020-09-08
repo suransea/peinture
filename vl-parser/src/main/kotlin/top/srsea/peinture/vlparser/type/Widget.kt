@@ -16,13 +16,12 @@
 
 package top.srsea.peinture.vlparser.type
 
-private const val NO_ID = ""
-private const val MATCH = "match"
 private const val ZERO = "0"
+private const val EMPTY = ""
 private const val TRANSPARENT = "#00000000"
 
 sealed class Widget {
-    var id = NO_ID
+    var id = EMPTY
     var color: String? = null
     var transform: Transform? = null
     var constraint = Constraint()
@@ -37,17 +36,17 @@ class Rect {
 }
 
 class Constraint {
-    var width = MATCH
-    var height = MATCH
-    var baseline = NO_ID
-    var ll = NO_ID
-    var lr = NO_ID
-    var tt = NO_ID
-    var tb = NO_ID
-    var rr = NO_ID
-    var rl = NO_ID
-    var bb = NO_ID
-    var bt = NO_ID
+    var width = EMPTY
+    var height = EMPTY
+    var baselineToBaseLine = EMPTY
+    var leftToLeft = EMPTY
+    var leftToRight = EMPTY
+    var topToTop = EMPTY
+    var topToBottom = EMPTY
+    var rightToRight = EMPTY
+    var rightToLeft = EMPTY
+    var bottomToBottom = EMPTY
+    var bottomToTop = EMPTY
     var margin = Rect()
 }
 
