@@ -118,11 +118,11 @@ private fun View.setup(widget: Widget) {
     widget.color?.apply {
         setBackgroundColor(toColor())
     }
-    val param = ConstraintLayout.LayoutParams(widget.width.toSize(context), widget.height.toSize(context))
     val constraint = widget.constraint
-    val margin = widget.margin
+    val param = ConstraintLayout.LayoutParams(constraint.width.toSize(context), constraint.height.toSize(context))
     layoutParams = param.apply {
         // margin
+        val margin = constraint.margin
         topMargin = margin.top.toSize(context)
         leftMargin = margin.left.toSize(context)
         rightMargin = margin.right.toSize(context)

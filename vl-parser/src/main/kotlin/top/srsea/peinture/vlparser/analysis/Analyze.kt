@@ -146,37 +146,38 @@ class Analyzer(vl: String) {
             val value = it.value
             when (it.name) {
                 "id" -> widget.id = value.asString()
-                "width" -> widget.width = value.asString()
-                "height" -> widget.height = value.asString()
                 "color" -> widget.color = value.asString()
-                "size" -> {
-                    widget.height = value.asString()
-                    widget.width = value.asString()
-                }
             }
         }
         widget.constraint = obtainConstraint(decl)
-        widget.margin = obtainRect(decl, type = "Margin")
         widget.padding = obtainRect(decl, type = "Padding")
         widget.transform = obtainTransform(decl)
     }
 
     private fun obtainConstraint(decl: Decl) = Constraint().apply {
-        decl.decls.lastOrNull {
-            it.type == "Constraint"
-        }?.props?.forEach {
-            val value = it.value.asString()
+        val constraintDecl = decl.decls.lastOrNull { it.type == "Constraint" }
+        constraintDecl?.props?.forEach {
+            val value = it.value
             when (it.name) {
-                "baseline" -> baseline = value
-                "ll" -> ll = value
-                "lr" -> lr = value
-                "tt" -> tt = value
-                "tb" -> tb = value
-                "rl" -> rl = value
-                "rr" -> rr = value
-                "bt" -> bt = value
-                "bb" -> bb = value
+                "width" -> width = value.asString()
+                "height" -> height = value.asString()
+                "size" -> {
+                    height = value.asString()
+                    width = value.asString()
+                }
+                "baseline" -> baseline = value.asString()
+                "ll" -> ll = value.asString()
+                "lr" -> lr = value.asString()
+                "tt" -> tt = value.asString()
+                "tb" -> tb = value.asString()
+                "rl" -> rl = value.asString()
+                "rr" -> rr = value.asString()
+                "bt" -> bt = value.asString()
+                "bb" -> bb = value.asString()
             }
+        }
+        constraintDecl?.also {
+            margin = obtainRect(it, "Margin")
         }
     }
 

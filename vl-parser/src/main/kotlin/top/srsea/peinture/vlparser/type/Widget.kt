@@ -23,13 +23,10 @@ private const val TRANSPARENT = "#00000000"
 
 sealed class Widget {
     var id = NO_ID
-    var width = MATCH
-    var height = MATCH
     var color: String? = null
     var transform: Transform? = null
     var constraint = Constraint()
     var padding = Rect()
-    var margin = Rect()
 }
 
 class Rect {
@@ -40,6 +37,8 @@ class Rect {
 }
 
 class Constraint {
+    var width = MATCH
+    var height = MATCH
     var baseline = NO_ID
     var ll = NO_ID
     var lr = NO_ID
@@ -49,6 +48,7 @@ class Constraint {
     var rl = NO_ID
     var bb = NO_ID
     var bt = NO_ID
+    var margin = Rect()
 }
 
 class Transform {

@@ -33,32 +33,32 @@ The DSL:
 // Use keyword "let" to declare a custom view 
 let Custom = Composite {
     Text('Hello') {
-        width = 'wrap'
-        height = 'wrap'
         id = 1
         textSize = '12dp'
         textColor = '#333333'
-        Margin {
-            top = '10dp'
-        }
         Constraint {
+            width = 'wrap'
+            height = 'wrap'
             ll = 'parent'
             rr = 'parent'
             tt = 'parent'
+            Margin {
+                top = '10dp'
+            }
         }
     }
     Image {
-        width = 'match'
-        height = 'wrap'
         src = 'https://w.wallhaven.cc/full/6k/wallhaven-6k3oox.jpg'
         scaleType = 'fit_xy'
-        Margin {
-            top = '10dp'
-        }
         Constraint {
+            width = 'match'
+            height = 'wrap'
             ll = 'parent'
             rr = 'parent'
             tb = 1
+            Margin {
+                top = '10dp'
+            }
         }
     }
 }
@@ -67,19 +67,21 @@ let Custom = Composite {
  * There can only be one top-level declaration 
  */
 Composite {
-    // size = '300dp'  // width = height = '300dp'
-    width = '300dp'
-    height = 'wrap'
     Custom {
         color = '#F6F6F6'
-        width = 'match'
-        height = 'wrap'
         Constraint {
+            width = 'match'
+            height = 'wrap'
             ll = 'parent'
             rr = 'parent'
             tt = 'parent'
             bb = 'parent'
         }
+    }
+    Constraint {
+        // size = '300dp'  // width = height = '300dp'
+        width = '300dp'
+        height = 'wrap'
     }
 }
 ```
@@ -113,12 +115,9 @@ The result:
 ### Common
 ```
 id          // integer
-width       // size, unit: dp, sp, pt, px, ex: '10dp'
-height      // size
 color       // background color, ex: '#FFFFFF'
 constraint  // declaration
 padding     // declaration
-margin      // declaration
 transform   // declaration
 ```
 
@@ -126,6 +125,9 @@ transform   // declaration
 
 ##### Constraint
 ```
+width     // size, unit: dp, sp, pt, px, ex: '10dp'
+height    // size
+margin      // declaration
 ll        // id or 'parent', left to left
 lr        // left to right
 tt        // top to top
@@ -134,6 +136,7 @@ rr        // right to right
 rl        // right to left
 bb        // bottom to bottom
 bt        // bottom to top
+baseline  // baseline to baseline
 ```
 
 ##### Padding
