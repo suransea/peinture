@@ -127,7 +127,7 @@ transform   // declaration
 ```
 width     // size, unit: dp, sp, pt, px, ex: '10dp'
 height    // size
-margin      // declaration
+margin    // declaration
 ll        // id or 'parent', left to left
 lr        // left to right
 tt        // top to top
