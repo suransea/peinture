@@ -39,26 +39,22 @@ let Custom = Composite {
         Constraint {
             width = 'wrap'
             height = 'wrap'
+            top = '10dp'
             leftToLeft = 'parent'
             rightToRight = 'parent'
             topToTop = 'parent'
-            Margin {
-                top = '10dp'
-            }
         }
     }
     Image {
         src = 'https://w.wallhaven.cc/full/6k/wallhaven-6k3oox.jpg'
         scaleType = 'fit_xy'
         Constraint {
-            width = 'match'
+            width = 'parent'
             height = 'wrap'
+            top = '10dp'
             leftToLeft = 'parent'
             rightToRight = 'parent'
             topToBottom = 1
-            Margin {
-                top = '10dp'
-            }
         }
     }
 }
@@ -70,7 +66,7 @@ Composite {
     Custom {
         color = '#F6F6F6'
         Constraint {
-            width = 'match'
+            width = 'parent'
             height = 'wrap'
             leftToLeft = 'parent'
             rightToRight = 'parent'
@@ -125,10 +121,13 @@ transform   // declaration
 
 ##### Constraint
 ```
-width                 // size, unit: dp, sp, pt, px, ex: '10dp'
-height                // size
-margin                // declaration
-topToTop              // id or 'parent'
+width                 // 'parent', 'wrap' or size, unit: dp, sp, pt, px, ex: '10dp'
+height 
+top                   // size
+left
+bottom
+right
+topToTop              // 'parent' or id
 topToBottom       
 leftToLeft        
 leftToRight       
@@ -139,14 +138,6 @@ baselineToBaseline
 ```
 
 ##### Padding
-```
-top       // size
-bottom    
-left      
-right     
-```
-
-##### Margin
 ```
 top       // size
 bottom    

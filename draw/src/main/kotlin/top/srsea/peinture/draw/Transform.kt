@@ -39,7 +39,7 @@ private fun String.toId(): Int = when (this) {
 private fun String.toColor(): Int = Color.parseColor(this)
 
 private fun String.toSize(ctx: Context): Int = when {
-    this == "match" || this.isEmpty() -> ViewGroup.LayoutParams.MATCH_PARENT
+    this == "parent" -> ViewGroup.LayoutParams.MATCH_PARENT
     this == "wrap" -> ViewGroup.LayoutParams.WRAP_CONTENT
     endsWith("dp") -> {
         TypedValue.applyDimension(
@@ -121,14 +121,11 @@ private fun View.setup(widget: Widget) {
     val constraint = widget.constraint
     val param = ConstraintLayout.LayoutParams(constraint.width.toSize(context), constraint.height.toSize(context))
     layoutParams = param.apply {
-        // margin
-        val margin = constraint.margin
-        topMargin = margin.top.toSize(context)
-        leftMargin = margin.left.toSize(context)
-        rightMargin = margin.right.toSize(context)
-        bottomMargin = margin.bottom.toSize(context)
+        topMargin = constraint.top.toSize(context)
+        leftMargin = constraint.left.toSize(context)
+        rightMargin = constraint.right.toSize(context)
+        bottomMargin = constraint.bottom.toSize(context)
 
-        // constraint
         baselineToBaseline = constraint.baselineToBaseLine.toId()
         topToTop = constraint.topToTop.toId()
         topToBottom = constraint.topToBottom.toId()

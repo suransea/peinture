@@ -25,10 +25,10 @@ sealed class Widget {
     var color: String? = null
     var transform: Transform? = null
     var constraint = Constraint()
-    var padding = Rect()
+    var padding = Padding()
 }
 
-class Rect {
+class Padding {
     var top = ZERO
     var left = ZERO
     var right = ZERO
@@ -36,8 +36,12 @@ class Rect {
 }
 
 class Constraint {
-    var width = EMPTY
-    var height = EMPTY
+    var width = ZERO
+    var height = ZERO
+    var top = ZERO
+    var left = ZERO
+    var bottom = ZERO
+    var right = ZERO
     var baselineToBaseLine = EMPTY
     var leftToLeft = EMPTY
     var leftToRight = EMPTY
@@ -47,7 +51,6 @@ class Constraint {
     var rightToLeft = EMPTY
     var bottomToBottom = EMPTY
     var bottomToTop = EMPTY
-    var margin = Rect()
 }
 
 class Transform {

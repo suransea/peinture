@@ -77,7 +77,7 @@ class Analyzer(vl: String) {
     }
 
     private fun analyzeText(decl: Decl): Text {
-        val text = decl.arg.items.getOrNull(0) as? ValueRhs
+        val text = decl.arg.items.firstOrNull() as? ValueRhs
             ?: throw AnalyzeException("the view 'Text' require an argument")
         return Text(text.value).apply {
             decl.props.forEach {
@@ -96,7 +96,7 @@ class Analyzer(vl: String) {
 
     private fun analyzeImage(decl: Decl): Image {
         val src = decl.props.lastOrNull { it.name == "src" }?.value
-            ?: decl.arg.items.getOrNull(0)
+            ?: decl.arg.items.firstOrNull()
             ?: throw AnalyzeException("the view 'Image' require an argument 'src'")
         return Image(src.asString()).apply {
             decl.props.forEach {
@@ -150,13 +150,13 @@ class Analyzer(vl: String) {
             }
         }
         widget.constraint = obtainConstraint(decl)
-        widget.padding = obtainRect(decl, type = "Padding")
+        widget.padding = obtainPadding(decl)
         widget.transform = obtainTransform(decl)
     }
 
     private fun obtainConstraint(decl: Decl) = Constraint().apply {
-        val constraintDecl = decl.decls.lastOrNull { it.type == "Constraint" }
-        constraintDecl?.props?.forEach {
+        val constraint = decl.decls.lastOrNull { it.type == "Constraint" }
+        constraint?.props?.forEach {
             val value = it.value
             when (it.name) {
                 "width" -> width = value.asString()
@@ -165,6 +165,10 @@ class Analyzer(vl: String) {
                     height = value.asString()
                     width = value.asString()
                 }
+                "top" -> top = value.asString()
+                "left" -> left = value.asString()
+                "bottom" -> bottom = value.asString()
+                "right" -> right = value.asString()
                 "baselineToBaseline" -> baselineToBaseLine = value.asString()
                 "leftToLeft" -> leftToLeft = value.asString()
                 "leftToRight" -> leftToRight = value.asString()
@@ -175,9 +179,6 @@ class Analyzer(vl: String) {
                 "bottomToTop" -> bottomToTop = value.asString()
                 "bottomToBottom" -> bottomToBottom = value.asString()
             }
-        }
-        constraintDecl?.also {
-            margin = obtainRect(it, "Margin")
         }
     }
 
@@ -198,9 +199,9 @@ class Analyzer(vl: String) {
         }
     }
 
-    private fun obtainRect(decl: Decl, type: String) = Rect().apply {
+    private fun obtainPadding(decl: Decl) = Padding().apply {
         decl.decls.lastOrNull {
-            it.type == type
+            it.type == "Padding"
         }?.props?.forEach {
             val value = it.value.asString()
             when (it.name) {
@@ -213,8 +214,7 @@ class Analyzer(vl: String) {
     }
 
     private fun obtainGradient(decl: Decl): Gradient? {
-        val gradient = decl.decls.lastOrNull { it.type == "Gradient" }
-        gradient ?: return null
+        val gradient = decl.decls.lastOrNull { it.type == "Gradient" } ?: return null
         return Gradient().apply {
             gradient.props.forEach { prop ->
                 val value = prop.value
