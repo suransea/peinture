@@ -24,29 +24,19 @@ open class AnalyzeException(msg: String) : Exception(msg)
 
 private fun Rhs.asString() = (this as? ValueRhs)?.value ?: throw AnalyzeException("expected an value rhs expression")
 
-private fun Rhs.asStringArray() = when (this) {
-    is TupleRhs -> items.map { it.asString() }.toTypedArray()
-    is ArrayRhs -> items.map { it.asString() }.toTypedArray()
+private fun Rhs.asList() = when (this) {
+    is TupleRhs -> items
+    is ArrayRhs -> items
     else -> throw AnalyzeException("expected an array or tuple rhs expression")
 }
 
-private fun Rhs.asPairArray() = when (this) {
-    is TupleRhs -> items.map { it.asStringArray() }.map { it[0] to it[1] }.toTypedArray()
-    is ArrayRhs -> items.map { it.asStringArray() }.map { it[0] to it[1] }.toTypedArray()
-    else -> throw AnalyzeException("expected an array or tuple rhs expression")
-}
+private fun Rhs.asStringArray() = asList().map { it.asString() }.toTypedArray()
 
-private fun Rhs.asPair() = when (this) {
-    is TupleRhs -> items.map { it.asString() }.let { it[0] to it[1] }
-    is ArrayRhs -> items.map { it.asString() }.let { it[0] to it[1] }
-    else -> throw AnalyzeException("expected an array or tuple rhs expression")
-}
+private fun Rhs.asStringPair() = asStringArray().let { it[0] to it[1] }
 
-private fun Rhs.asTriple() = when (this) {
-    is TupleRhs -> items.map { it.asString() }.let { Triple(it[0], it[1], it[2]) }
-    is ArrayRhs -> items.map { it.asString() }.let { Triple(it[0], it[1], it[2]) }
-    else -> throw AnalyzeException("expected an array or tuple rhs expression")
-}
+private fun Rhs.asStringTriple() = asStringArray().let { Triple(it[0], it[1], it[2]) }
+
+private fun Rhs.asStringPairArray() = asList().map { it.asStringPair() }.toTypedArray()
 
 class Analyzer(vl: String) {
     private val root = Parser(vl).parse()
@@ -132,7 +122,7 @@ class Analyzer(vl: String) {
                 "strokeWidth" -> strokeWidth = value.asString()
                 "strokeLength" -> strokeLength = value.asString()
                 "strokeSpace" -> strokeSpace = value.asString()
-                "cornerRadii" -> cornerRadii = value.asPairArray()
+                "cornerRadii" -> cornerRadii = value.asStringPairArray()
                 "cornerRadius" -> cornerRadii = value.asString().let { size ->
                     arrayOf(size to size, size to size, size to size, size to size)
                 }
@@ -190,11 +180,11 @@ class Analyzer(vl: String) {
         }?.props?.forEach {
             val value = it.value
             when (it.name) {
-                "pivot" -> pivot = value.asPair()
-                "scroll" -> scroll = value.asPair()
-                "translation" -> translation = value.asTriple()
-                "scale" -> scale = value.asPair().run { first.toFloat() to second.toFloat() }
-                "rotation" -> rotation = value.asTriple()
+                "pivot" -> pivot = value.asStringPair()
+                "scroll" -> scroll = value.asStringPair()
+                "translation" -> translation = value.asStringTriple()
+                "scale" -> scale = value.asStringPair().run { first.toFloat() to second.toFloat() }
+                "rotation" -> rotation = value.asStringTriple()
                     .run { Triple(first.toFloat(), second.toFloat(), third.toFloat()) }
                 "alpha" -> alpha = value.asString().toFloat()
             }
