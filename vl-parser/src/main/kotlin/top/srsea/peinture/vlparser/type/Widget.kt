@@ -51,6 +51,8 @@ class Constraint {
     var rightToLeft = EMPTY
     var bottomToBottom = EMPTY
     var bottomToTop = EMPTY
+    var widthToHeight = EMPTY
+    var heightToWidth = EMPTY
 }
 
 class Transform {

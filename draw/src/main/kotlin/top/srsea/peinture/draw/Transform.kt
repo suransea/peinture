@@ -135,6 +135,13 @@ private fun View.setup(widget: Widget) {
         rightToLeft = constraint.rightToLeft.toId()
         bottomToBottom = constraint.bottomToBottom.toId()
         bottomToTop = constraint.bottomToTop.toId()
+
+        if (constraint.widthToHeight.isNotEmpty()) {
+            dimensionRatio = constraint.widthToHeight
+        }
+        if (constraint.heightToWidth.isNotEmpty()) {
+            dimensionRatio = constraint.heightToWidth
+        }
     }
 
     val padding = widget.padding

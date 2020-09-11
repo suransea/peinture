@@ -178,6 +178,8 @@ class Analyzer(vl: String) {
                 "rightToRight" -> rightToRight = value.asString()
                 "bottomToTop" -> bottomToTop = value.asString()
                 "bottomToBottom" -> bottomToBottom = value.asString()
+                "widthToHeight" -> widthToHeight = "${value.asString()}:1"
+                "heightToWidth" -> heightToWidth = "1:${value.asString()}"
             }
         }
     }
