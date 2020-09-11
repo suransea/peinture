@@ -135,6 +135,8 @@ rightToRight
 rightToLeft       
 bottomToBottom   
 baselineToBaseline     
+widthToHeight         // ratio
+heightToWidth         
 ```
 
 ##### Padding
