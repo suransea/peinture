@@ -49,11 +49,10 @@ class Analyzer(vl: String) {
 
     private fun analyzeWidget(decl: Decl): Widget? = when (decl.type) {
         "Composite" -> analyzeComposite(decl)
-        "Empty" -> Empty()
+        "Empty", "View" -> Empty()
         "Text" -> analyzeText(decl)
         "Image" -> analyzeImage(decl)
-        "Card" -> analyzeCard(decl)
-        "Shape" -> analyzeShape(decl)
+        "Clip" -> analyzeClip(decl)
         in varMap -> varMap[decl.type]?.let { analyzeWidget(it) }
         else -> null
     }?.also { attachProps(it, decl) }
@@ -71,14 +70,14 @@ class Analyzer(vl: String) {
             ?: throw AnalyzeException("the view 'Text' require an argument")
         return Text(text.value).apply {
             decl.props.forEach {
-                val value = it.value.asString()
+                val value = it.value
                 when (it.name) {
-                    "textSize" -> textSize = value
-                    "textColor" -> textColor = value
-                    "textStyle" -> textStyle = value
-                    "underLine" -> underLine = value.toBoolean()
-                    "deleteLine" -> deleteLine = value.toBoolean()
-                    "maxLines" -> maxLines = value.toInt()
+                    "textSize" -> textSize = value.asString()
+                    "textColor" -> textColor = value.asString()
+                    "textStyle" -> textStyle = value.asString()
+                    "underLine" -> underLine = value.asString().toBoolean()
+                    "deleteLine" -> deleteLine = value.asString().toBoolean()
+                    "maxLines" -> maxLines = value.asString().toInt()
                 }
             }
         }
@@ -90,45 +89,20 @@ class Analyzer(vl: String) {
             ?: throw AnalyzeException("the view 'Image' require an argument 'src'")
         return Image(src.asString()).apply {
             decl.props.forEach {
-                val value = it.value.asString()
+                val value = it.value
                 when (it.name) {
-                    "scaleType" -> scaleType = value
+                    "scaleType" -> scaleType = value.asString()
                 }
             }
         }
     }
 
-    private fun analyzeCard(decl: Decl) = Card().apply {
+    private fun analyzeClip(decl: Decl) = Clip().apply {
         decl.decls.forEach {
             analyzeWidget(it)?.also { analyzedWidget ->
                 widget = analyzedWidget
             }
         }
-        decl.props.forEach {
-            val value = it.value.asString()
-            when (it.name) {
-                "cardRadius" -> cardRadius = value
-            }
-        }
-    }
-
-    private fun analyzeShape(decl: Decl) = Shape().apply {
-        decl.props.forEach {
-            val value = it.value
-            when (it.name) {
-                "shape" -> shape = value.asString()
-                "fillColor" -> fillColor = value.asString()
-                "strokeColor" -> strokeColor = value.asString()
-                "strokeWidth" -> strokeWidth = value.asString()
-                "strokeLength" -> strokeLength = value.asString()
-                "strokeSpace" -> strokeSpace = value.asString()
-                "cornerRadii" -> cornerRadii = value.asStringPairArray()
-                "cornerRadius" -> cornerRadii = value.asString().let { size ->
-                    arrayOf(size to size, size to size, size to size, size to size)
-                }
-            }
-        }
-        gradient = obtainGradient(decl)
     }
 
     private fun attachProps(widget: Widget, decl: Decl) {
@@ -137,11 +111,22 @@ class Analyzer(vl: String) {
             when (it.name) {
                 "id" -> widget.id = value.asString()
                 "color" -> widget.color = value.asString()
+                "alpha" -> widget.alpha = value.asString().toFloat()
+                "shape" -> widget.shape = value.asString()
+                "borderColor" -> widget.borderColor = value.asString()
+                "borderWidth" -> widget.borderWidth = value.asString()
+                "borderLength" -> widget.borderLength = value.asString()
+                "borderSpace" -> widget.borderSpace = value.asString()
+                "cornerRadii" -> widget.cornerRadii = value.asStringPairArray()
+                "cornerRadius" -> widget.cornerRadii = value.asString().let { size ->
+                    arrayOf(size to size, size to size, size to size, size to size)
+                }
             }
         }
         widget.constraint = obtainConstraint(decl)
         widget.padding = obtainPadding(decl)
         widget.transform = obtainTransform(decl)
+        widget.gradient = obtainGradient(decl)
     }
 
     private fun obtainConstraint(decl: Decl) = Constraint().apply {
@@ -186,7 +171,6 @@ class Analyzer(vl: String) {
                 "scale" -> scale = value.asStringPair().run { first.toFloat() to second.toFloat() }
                 "rotation" -> rotation = value.asStringTriple()
                     .run { Triple(first.toFloat(), second.toFloat(), third.toFloat()) }
-                "alpha" -> alpha = value.asString().toFloat()
             }
         }
     }

@@ -27,7 +27,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import top.srsea.peinture.draw.view.CardView
+import top.srsea.peinture.draw.view.ClipView
 import top.srsea.peinture.vlparser.type.*
 
 private fun String.toId(): Int = when (this) {
@@ -115,9 +115,7 @@ private fun String.toGradientOrientation() = when (this) {
 
 private fun View.setup(widget: Widget) {
     id = widget.id.toId()
-    widget.color?.apply {
-        setBackgroundColor(toColor())
-    }
+    alpha = widget.alpha
     val constraint = widget.constraint
     val param = ConstraintLayout.LayoutParams(constraint.width.toSize(context), constraint.height.toSize(context))
     layoutParams = param.apply {
@@ -167,10 +165,37 @@ private fun View.setup(widget: Widget) {
         translationX = translation.first.toSize(context).toFloat()
         translationY = translation.second.toSize(context).toFloat()
         translationZ = translation.third.toSize(context).toFloat()
-        alpha?.apply {
-            setAlpha(this)
-        }
     }
+
+    val bg = GradientDrawable()
+    widget.shape?.apply {
+        bg.shape = toShape()
+    }
+    bg.setColor(widget.color.toColor())
+    bg.setStroke(
+        widget.borderWidth.toSize(context),
+        widget.borderColor.toColor(),
+        widget.borderLength.toSize(context).toFloat(),
+        widget.borderSpace.toSize(context).toFloat()
+    )
+    bg.cornerRadii = widget.cornerRadii.flatMap { point ->
+        point.toList()
+    }.map { size ->
+        size.toSize(context).toFloat()
+    }.toFloatArray()
+
+    widget.gradient?.apply {
+        type?.apply {
+            bg.gradientType = toGradientType()
+        }
+        bg.colors = colors.map(String::toColor).toIntArray()
+        orientation?.apply {
+            bg.orientation = toGradientOrientation()
+        }
+        bg.gradientRadius = radius.toSize(context).toFloat()
+        bg.setGradientCenter(center.first, center.second)
+    }
+    background = bg
 }
 
 fun Widget.toView(drawer: Drawer): View = when (this) {
@@ -182,17 +207,14 @@ fun Widget.toView(drawer: Drawer): View = when (this) {
     is Text -> TextView(drawer.context).also {
         it.text = text
         textSize?.apply {
-            it.textSize = toSize(it.context).toFloat()
+            it.setTextSize(TypedValue.COMPLEX_UNIT_PX, toSize(it.context).toFloat())
         }
         textColor?.apply {
             it.setTextColor(toColor())
         }
-        deleteLine?.apply {
-            it.paint.isStrikeThruText = this
-        }
-        underLine?.apply {
-            it.paint.isUnderlineText = this
-        }
+        it.paint.isStrikeThruText = deleteLine
+        it.paint.isUnderlineText = underLine
+        it.paint.isAntiAlias = true
         textStyle?.apply {
             it.typeface = toTypeFace()
         }
@@ -209,41 +231,15 @@ fun Widget.toView(drawer: Drawer): View = when (this) {
         drawer.imageLoader.load(src, it)
     }
     is Empty -> View(drawer.context)
-    is Card -> CardView(drawer.context).also {
+    is Clip -> ClipView(drawer.context).also {
         widget?.apply {
             it.addView(toView(drawer))
         }
-        it.radius = cardRadius.toSize(it.context)
-    }
-    is Shape -> View(drawer.context).also {
-        val bg = GradientDrawable()
-        shape?.apply {
-            bg.shape = toShape()
-        }
-        bg.setColor(fillColor.toColor())
-        bg.setStroke(
-            strokeWidth.toSize(it.context),
-            strokeColor.toColor(),
-            strokeLength.toSize(it.context).toFloat(),
-            strokeSpace.toSize(it.context).toFloat()
-        )
-        bg.cornerRadii = cornerRadii.flatMap { point ->
+        it.radii = cornerRadii.flatMap { point ->
             point.toList()
         }.map { size ->
-            size.toSize(it.context).toFloat()
+            size.toSize(drawer.context).toFloat()
         }.toFloatArray()
-
-        gradient?.apply {
-            type?.apply {
-                bg.gradientType = toGradientType()
-            }
-            bg.colors = colors.map(String::toColor).toIntArray()
-            orientation?.apply {
-                bg.orientation = toGradientOrientation()
-            }
-            bg.gradientRadius = radius.toSize(it.context).toFloat()
-            bg.setGradientCenter(center.first, center.second)
-        }
-        it.background = bg
+        it.shape = shape ?: ""
     }
 }.also { it.setup(this) }

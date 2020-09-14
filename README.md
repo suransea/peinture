@@ -34,12 +34,12 @@ The DSL:
 let Custom = Composite {
     Text('Hello') {
         id = 1
-        textSize = '12dp'
+        textSize = 120
         textColor = '#333333'
         Constraint {
             width = 'wrap'
             height = 'wrap'
-            top = '10dp'
+            top = 60
             leftToLeft = 'parent'
             rightToRight = 'parent'
             topToTop = 'parent'
@@ -51,9 +51,7 @@ let Custom = Composite {
         Constraint {
             width = 'parent'
             height = 'wrap'
-            top = '10dp'
-            leftToLeft = 'parent'
-            rightToRight = 'parent'
+            top = 60
             topToBottom = 1
         }
     }
@@ -68,15 +66,10 @@ Composite {
         Constraint {
             width = 'parent'
             height = 'wrap'
-            leftToLeft = 'parent'
-            rightToRight = 'parent'
-            topToTop = 'parent'
-            bottomToBottom = 'parent'
         }
     }
     Constraint {
-        // size = '300dp'  // width = height = '300dp'
-        width = '300dp'
+        width = 800
         height = 'wrap'
     }
 }
@@ -86,7 +79,7 @@ The usage:
 
 ```kotlin
 val drawer = Drawer(context)
-val bitmap = drawer.drawBitmap(dsl, Bitmap.Config.RGB_565)
+val bitmap = drawer.drawBitmap(dsl)
 ```
 
 you can also get the view with:
@@ -104,7 +97,7 @@ You can also customize the image loader.
 
 The result:
 
-![example](https://i.loli.net/2020/08/29/kAa5TbwxcfjuQEJ.png)
+![example](https://i.loli.net/2020/09/14/RucOkQEdPUgeBIT.png)
 
 ## Widgets
 
@@ -112,9 +105,18 @@ The result:
 ```
 id          // integer
 color       // background color, ex: '#FFFFFF'
+alpha        // float in [0, 1], 0 is transparent
 constraint  // declaration
 padding     // declaration
 transform   // declaration
+shape        // 'rectangle' or 'oval'
+borderColor  // ex: '#333333'
+borderWidth  // size
+borderLength // size
+borderSpace  // size
+cornerRadii  // ex: [('10dp', '10dp'), ('10dp', '10dp'), ('10dp', '10dp'), ('10dp', '10dp')]
+cornerRadius // size
+gradient     // declaration
 ```
 
 #### Declaration
@@ -154,7 +156,24 @@ scroll       // (x, y)
 translation  // (x, y, z)
 scale        // (x, y)
 rotation     // (x, y, z)
-alpha        // float in [0, 1], 0 is transparent
+```
+
+##### Gradient
+```
+colors      // array, at least 2 items
+type        // 'linear'
+               'radial'
+               'sweep'
+orientation // 'bl_tr'
+               'bt'
+               'br_tl'
+               'lr'
+               'rl'
+               'tl_br'
+               'tb'
+               'tr_bl'
+radius      // radius for type "radial"
+center      // center point for type "sweep", ex: (0.5, 0.5)
 ```
 
 ### Text
@@ -187,46 +206,11 @@ scaleType  // string: 'matrix'
                       'center_inside'
 ```
 
-### Card
-```
-cardRadius // size
-```
+### Clip
+A container to clip the inner widget to the specific shape.
 
-### Empty
+### View, Empty
 No specific arguments.
-
-### Shape
-```
-shape        // 'rectangle' or 'oval'
-fillColor    // ex: '#F6F6F6'
-strokeColor  // ex: '#333333'
-strokeWidth  // size
-strokeLength // size
-strokeSpace  // size
-cornerRadii  // ex: [('10dp', '10dp'), ('10dp', '10dp'), ('10dp', '10dp'), ('10dp', '10dp')]
-cornerRadius // size
-gradient     // declaration
-```
-
-#### Declaration
-
-##### Gradient
-```
-colors      // array, at least 2 items
-type        // 'linear'
-               'radial'
-               'sweep'
-orientation // 'bl_tr'
-               'bt'
-               'br_tl'
-               'lr'
-               'rl'
-               'tl_br'
-               'tb'
-               'tr_bl'
-radius      // radius for type "radial"
-center      // center point for type "sweep", ex: (0.5, 0.5)
-```
 
 ## License
 

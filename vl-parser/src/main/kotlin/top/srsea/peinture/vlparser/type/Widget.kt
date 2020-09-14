@@ -22,10 +22,18 @@ private const val TRANSPARENT = "#00000000"
 
 sealed class Widget {
     var id = EMPTY
-    var color: String? = null
+    var color = TRANSPARENT
+    var alpha = 1f
     var transform: Transform? = null
     var constraint = Constraint()
     var padding = Padding()
+    var shape: String? = null
+    var borderColor = TRANSPARENT
+    var borderWidth = ZERO
+    var borderLength = ZERO
+    var borderSpace = ZERO
+    var cornerRadii = arrayOf(ZERO to ZERO, ZERO to ZERO, ZERO to ZERO, ZERO to ZERO)
+    var gradient: Gradient? = null
 }
 
 class Padding {
@@ -61,7 +69,6 @@ class Transform {
     var translation = Triple(ZERO, ZERO, ZERO)
     var scale = 1f to 1f
     var rotation = Triple(0f, 0f, 0f)
-    var alpha: Float? = null
 }
 
 class Gradient {
@@ -76,9 +83,8 @@ class Composite : Widget() {
     val widgets = mutableListOf<Widget>()
 }
 
-class Card : Widget() {
+class Clip : Widget() {
     var widget: Widget? = null
-    var cardRadius = ZERO
 }
 
 class Empty : Widget()
@@ -87,22 +93,11 @@ class Text(val text: String) : Widget() {
     var textSize: String? = null
     var textColor: String? = null
     var textStyle: String? = null
-    var deleteLine: Boolean? = null
-    var underLine: Boolean? = null
+    var deleteLine = false
+    var underLine = false
     var maxLines: Int? = null
 }
 
 class Image(val src: String) : Widget() {
     var scaleType: String? = null
-}
-
-class Shape : Widget() {
-    var shape: String? = null
-    var fillColor = TRANSPARENT
-    var strokeColor = TRANSPARENT
-    var strokeWidth = ZERO
-    var strokeLength = ZERO
-    var strokeSpace = ZERO
-    var cornerRadii = arrayOf(ZERO to ZERO, ZERO to ZERO, ZERO to ZERO, ZERO to ZERO)
-    var gradient: Gradient? = null
 }

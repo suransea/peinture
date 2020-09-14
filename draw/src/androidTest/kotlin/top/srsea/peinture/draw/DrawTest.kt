@@ -12,12 +12,12 @@ val vl = """
 let Custom = Composite {
     Text('Hello') {
         id = 1
-        textSize = '12dp'
+        textSize = 120
         textColor = '#333333'
         Constraint {
             width = 'wrap'
             height = 'wrap'
-            top = '10dp'
+            top = 60
             leftToLeft = 'parent'
             rightToRight = 'parent'
             topToTop = 'parent'
@@ -29,9 +29,7 @@ let Custom = Composite {
         Constraint {
             width = 'parent'
             height = 'wrap'
-            top = '10dp'
-            leftToLeft = 'parent'
-            rightToRight = 'parent'
+            top = 60
             topToBottom = 1
         }
     }
@@ -46,15 +44,10 @@ Composite {
         Constraint {
             width = 'parent'
             height = 'wrap'
-            leftToLeft = 'parent'
-            rightToRight = 'parent'
-            topToTop = 'parent'
-            bottomToBottom = 'parent'
         }
     }
     Constraint {
-        // size = '300dp'  // width = height = '300dp'
-        width = '300dp'
+        width = 800
         height = 'wrap'
     }
 }
