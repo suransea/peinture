@@ -103,12 +103,12 @@ The result:
 
 ### Common
 ```
-id          // integer
-color       // background color, ex: '#FFFFFF'
+id           // integer
+color        // background color, ex: '#FFFFFF'
 alpha        // float in [0, 1], 0 is transparent
-constraint  // declaration
-padding     // declaration
-transform   // declaration
+constraint   // declaration
+padding      // declaration
+transform    // declaration
 shape        // 'rectangle' or 'oval'
 borderColor  // ex: '#333333'
 borderWidth  // size
