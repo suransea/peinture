@@ -67,7 +67,7 @@ class DrawTest {
     fun testDrawView() {
         Handler(Looper.getMainLooper()).post {
             val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-            val drawer = Drawer(appContext, imageLoader = GladeImageLoader)
+            val drawer = Drawer(appContext, imageLoader = ImageLoaders.glade)
             val view = drawer.drawView(vl)
             println(view)
         }

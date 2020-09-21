@@ -228,7 +228,7 @@ fun Widget.toView(drawer: Drawer): View = when (this) {
         scaleType?.apply {
             it.scaleType = toScaleType()
         }
-        drawer.imageLoader.load(src, it)
+        drawer.imageLoader.invoke(src, it)
     }
     is Empty -> View(drawer.context)
     is Clip -> ClipView(drawer.context).also {

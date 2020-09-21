@@ -31,7 +31,7 @@ private fun Int.toMeasureSpec(): Int = when (this) {
     else -> View.MeasureSpec.makeMeasureSpec(this, View.MeasureSpec.EXACTLY)
 }
 
-class Drawer(val context: Context, val imageLoader: ImageLoader = GladeBlockingImageLoader) {
+class Drawer(val context: Context, val imageLoader: ImageLoader = ImageLoaders.gladeBlocking) {
 
     fun drawBitmap(vl: String, config: Bitmap.Config = Bitmap.Config.ARGB_8888): Bitmap {
         val rootView = drawView(vl)
@@ -48,18 +48,14 @@ class Drawer(val context: Context, val imageLoader: ImageLoader = GladeBlockingI
     fun drawView(vl: String) = Analyzer(vl).analyze().toView(this)
 }
 
-interface ImageLoader {
-    fun load(src: String, view: ImageView)
-}
+typealias ImageLoader = (src: String, view: ImageView) -> Unit
 
-object GladeImageLoader : ImageLoader {
-    override fun load(src: String, view: ImageView) {
+object ImageLoaders {
+    val glade: ImageLoader = { src, view ->
         Glide.with(view).load(src).into(view)
     }
-}
 
-object GladeBlockingImageLoader : ImageLoader {
-    override fun load(src: String, view: ImageView) {
+    val gladeBlocking: ImageLoader = { src, view ->
         val bitmap = Glide.with(view).asBitmap().load(src).submit().get()
         view.setImageBitmap(bitmap)
     }

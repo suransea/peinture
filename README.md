@@ -85,11 +85,11 @@ val bitmap = drawer.drawBitmap(dsl)
 you can also get the view with:
 
 ```kotlin
-val drawer = Drawer(context, imageLoader = GladeImageLoader)
+val drawer = Drawer(context, imageLoader = ImageLoaders.glade)
 val view = drawer.drawView(dsl)
 ```
 
-The image loader is "GladeBlockingImageLoader" by default. 
+The image loader is "ImageLoaders.gladeBlocking" by default. 
 A blocking image loader required to output a bitmap, 
 but not to output a view to be displayed. 
 You can also customize the image loader.
